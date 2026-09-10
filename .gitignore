@@ -13,3 +13,6 @@ _gen_*.py
 
 # 从 GitHub 克隆下来的副本（嵌套仓库，不提交）
 szgzt/
+
+# 本地推送脚本
+push-to-github.bat
