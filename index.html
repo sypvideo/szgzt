@@ -149,9 +149,33 @@ main{max-width:1180px;margin:0 auto;padding:18px 22px}
 .modal .m-x{background:#FFF8EE;border-radius:12px;padding:12px 14px;font-size:14px;color:#8a6a4d;line-height:1.6;margin-bottom:14px}
 .modal .m-x b{color:var(--main)}
 .m-words{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-.m-words span{background:#F6EFE6;border-radius:10px;padding:6px 14px;font-size:15px;color:var(--ink);font-weight:600}
+.m-words span{background:#F6EFE6;border-radius:10px;padding:6px 12px;font-size:15px;color:var(--ink);font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.15s}
+.m-words span:hover{background:#EFE3D5}
+.m-words span:active{transform:scale(.96)}
+
+/* ============ 发音喇叭 ============ */
+.spk{
+  display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+  width:28px;height:28px;border-radius:50%;background:var(--main-soft);color:#b2530a;
+  font-size:14px;cursor:pointer;user-select:none;transition:.15s;line-height:1;
+}
+.spk:hover{transform:scale(1.12);background:#FFD9B8}
+.spk:active{transform:scale(.92)}
+.spk.playing{background:var(--main);color:#fff;animation:pulse .9s infinite}
+.spk.big{width:40px;height:40px;font-size:19px}
+.spk-mini{font-size:11px;opacity:.7;font-style:normal}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,138,61,.55)}50%{box-shadow:0 0 0 7px rgba(255,138,61,0)}}
+.ch-row{display:flex;align-items:center;justify-content:center;gap:8px}
+.audio-set{display:flex;flex-direction:column;gap:12px;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+.switch-row{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--ink);cursor:pointer}
+.switch-row .sw{width:44px;height:24px;border-radius:99px;background:#E4D8CA;position:relative;transition:.2s;flex-shrink:0}
+.switch-row .sw::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.switch-row .sw.on{background:var(--green)}
+.switch-row .sw.on::after{left:22px}
+.switch-row .desc{font-size:12px;color:var(--sub)}
 .m-bs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
-.m-bs i{font-style:normal;background:#F3E8DC;border-radius:8px;padding:4px 10px;font-size:13px;color:#8a6a4d}
+.m-bs i{font-style:normal;background:#F6EFE6;border-radius:10px;padding:5px 8px;font-size:12px;color:#8a6a4d;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:52px}
+.m-bs i b{font-weight:500;font-size:11px;color:#9a8c7f}
 .m-btn{width:100%;border:none;border-radius:14px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,#FFB26B,#FF8A3D);box-shadow:0 6px 14px rgba(255,138,61,.35)}
 .m-btn.learned-b{background:linear-gradient(135deg,#7ED6A5,#4CAF6E)}
 .m-btn:hover{transform:translateY(-2px)}
@@ -172,9 +196,12 @@ main{max-width:1180px;margin:0 auto;padding:18px 22px}
 .s-ch{font-size:64px;font-weight:700;line-height:1}
 .s-py{color:var(--pink);font-size:16px;margin-top:4px}
 .s-bs{display:flex;flex-wrap:wrap;gap:8px}
-.s-bs .step{flex:1 0 calc(20% - 8px);min-width:52px;text-align:center;background:#F6EFE6;border-radius:10px;padding:8px 4px;font-size:13px;color:#9a8c7f;border:2px solid transparent;transition:.25s}
+.s-bs .step{flex:1 0 calc(20% - 8px);min-width:56px;text-align:center;background:#F6EFE6;border-radius:10px;padding:6px 4px;font-size:13px;color:#9a8c7f;border:2px solid transparent;transition:.25s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.s-bs .step .nm{font-size:11px;line-height:1}
 .s-bs .step.done{background:var(--green-soft);color:var(--green);border-color:#b5e3c6}
-.s-bs .step.cur{background:var(--main);color:#fff;border-color:var(--main);transform:scale(1.08);font-weight:700}
+.s-bs .step.cur{background:var(--main);color:#fff;border-color:var(--main);transform:scale(1.06);font-weight:700}
+.st-svg{display:block;flex-shrink:0}
+.s-tip svg{display:inline-block;vertical-align:middle;margin:0 4px}
 .s-tip{font-size:13px;color:var(--sub);line-height:1.7;background:#FFF8EE;border-radius:12px;padding:12px;border-left:4px solid var(--main)}
 .s-nav{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .s-nav button{border:none;border-radius:12px;padding:12px;font-size:15px;font-weight:600;cursor:pointer;background:#F6EFE6;color:var(--ink)}
@@ -332,7 +359,10 @@ main{max-width:1180px;margin:0 auto;padding:18px 22px}
           <div class="s-head">
             <div class="s-em" id="sEm">🌞</div>
             <div>
-              <div class="s-ch hanzi" id="sCh">日</div>
+              <div class="ch-row" style="justify-content:flex-start">
+                <div class="s-ch hanzi" id="sCh">日</div>
+                <span class="spk" id="sSpk" data-say="" data-type="char" onclick="speakEl(this,event)" title="点一下听读音">🔊</span>
+              </div>
               <div class="s-py" id="sPy">rì</div>
             </div>
             <div style="margin-left:auto;text-align:right;font-size:13px;color:var(--sub)">
@@ -378,6 +408,21 @@ main{max-width:1180px;margin:0 auto;padding:18px 22px}
       <div class="r-chart" id="rChart"></div>
     </div>
     <div class="card">
+      <h2>🔊 发音设置</h2>
+      <div class="audio-set" style="margin-top:0;padding-top:0;border-top:none">
+        <div class="switch-row" id="swSlow"><span class="sw"></span><div>慢速跟读<div class="desc">点喇叭时用 0.7 倍速朗读，方便孩子跟读模仿</div></div></div>
+        <div class="switch-row" id="swAuto"><span class="sw"></span><div>自动朗读<div class="desc">打开字卡时自动读一遍这个字</div></div></div>
+        <div class="switch-row" id="swTts"><span class="sw on"></span><div>缺失时用浏览器语音顶上<div class="desc">还没放音频文件的字，自动用设备自带语音朗读</div></div></div>
+      </div>
+      <div class="export-row" style="margin-top:16px">
+        <button id="btnAudioList">🎧 导出音频文件清单</button>
+        <button id="btnCheckAudio">🔍 检测音频包状态</button>
+      </div>
+      <div style="font-size:12px;color:var(--sub);margin-top:10px;line-height:1.7">
+        音频文件放在项目的 <b>audio/chars/</b>（单字）和 <b>audio/words/</b>（组词）文件夹里，文件名用汉字本身，例如 <b>水.mp3</b>、<b>喝水.mp3</b>。
+      </div>
+    </div>
+    <div class="card">
       <h2>📤 家长工具</h2>
       <div class="export-row">
         <button id="btnExport">📋 导出已学字清单</button>
@@ -398,13 +443,16 @@ main{max-width:1180px;margin:0 auto;padding:18px 22px}
     <div class="m-head">
       <div class="m-em" id="mEm">🌞</div>
       <div>
-        <div class="m-ch hanzi" id="mCh">日</div>
+        <div class="ch-row" style="justify-content:flex-start">
+          <div class="m-ch hanzi" id="mCh">日</div>
+          <span class="spk big" id="mSpk" data-say="" data-type="char" onclick="speakEl(this,event)" title="点一下听读音">🔊</span>
+        </div>
         <div class="m-py" id="mPy">rì</div>
         <div class="m-info" id="mInfo">自然 · 共 4 画</div>
       </div>
     </div>
     <div class="m-x" id="mX"></div>
-    <div style="font-size:13px;color:var(--sub);margin-bottom:6px">🔤 组词</div>
+    <div style="font-size:13px;color:var(--sub);margin-bottom:6px">🔤 组词 <span style="font-size:11px">（点词听读音）</span></div>
     <div class="m-words" id="mWords"></div>
     <div style="font-size:13px;color:var(--sub);margin-bottom:6px">✏️ 笔顺</div>
     <div class="m-bs" id="mBs"></div>
@@ -506,7 +554,7 @@ const CHARS = [
 {c:'牙',p:'yá',s:4,w:['牙齿','牙刷','门牙'],e:'🦷',g:'身体',b:['横','撇折','竖钩','撇'],x:'像露出的牙齿'},
 {c:'舌',p:'shé',s:6,w:['舌头','舌尖','口舌'],e:'👅',g:'身体',b:['撇','横','竖','竖','横折','横'],x:'古字下加一横，舌头'},
 {c:'头',p:'tóu',s:5,w:['头发','抬头','头顶'],e:'🙂',g:'身体',b:['点','点','横','撇','点'],x:'大上加两点，脑袋'},
-{c:'心',p:'xīn',s:4,w:['开心','小心','中心'],e:'❤️',g:'身体',b:['点','斜钩','点','点'],x:'像一颗爱心'},
+{c:'心',p:'xīn',s:4,w:['开心','小心','中心'],e:'❤️',g:'身体',b:['点','卧钩','点','点'],x:'像一颗爱心'},
 /* 动物 */
 {c:'牛',p:'niú',s:4,w:['小牛','牛奶','牛肉'],e:'🐮',g:'动物',b:['撇','横','横','竖'],x:'像牛头长角'},
 {c:'羊',p:'yáng',s:6,w:['小羊','山羊','羊毛'],e:'🐑',g:'动物',b:['点','撇','横','横','横','竖'],x:'像羊角弯弯'},
@@ -653,6 +701,182 @@ let strokeIdx = 0;
 let strokeStep = 0;
 let penColor = '#FF6B6B';
 const PEN_COLORS = ['#FF6B6B','#FF9F1C','#FFD93D','#4CAF6E','#4D96FF','#9B59B6'];
+
+/* 笔画名 → 真实笔形 SVG 路径（24×24 坐标，stroke 为 currentColor） */
+const STROKE_PATH = {
+  '横':   'M3.2 16.4 Q12 15.1 20.8 15.1',
+  '竖':   'M12.2 3.2 L11.8 20.8',
+  '撇':   'M12.8 3.2 C13.8 8.4 12.4 13.4 9.2 16.8 C7.8 18.1 6.3 19.2 4.6 20',
+  '捺':   'M4.6 8.6 C7.4 8.4 10 10.2 12.4 12.8 C14.2 15 16 17.6 16.9 19.8',
+  '点':   'M8.8 4.6 C10.4 7.6 12.6 10.4 15.6 13.2 C16.8 14.2 18 14.9 19.6 15.4',
+  '提':   'M3.6 18.6 C9.6 15.4 15.2 11.8 20.4 7.4',
+  '斜钩': 'M8.8 3.2 C7.4 9.6 8.8 14.8 12.6 17.6 C14.9 19.3 17.6 19.4 19.7 18.5 C20.2 18.2 20.5 17.8 20.7 17.3 L19.3 15.4',
+  '卧钩': 'M5.2 7.2 C7.2 13.4 12.4 17.2 18 16.3 C19.6 16.1 20.4 15.3 20.5 14.2 L18.7 13.4',
+  '弯钩': 'M11.8 3.2 C13.8 8.4 13 13.6 10.1 16.6 C8.6 18.1 6.9 19 5.2 19.2 L4.2 17.5',
+  '横折': 'M3.4 10.2 L15.4 9.4 L14.9 20.2',
+  '横撇': 'M3.4 9.6 L15.4 9 L8.6 19.4',
+  '横钩': 'M3.4 10.2 L15.4 9.6 M15.4 9.6 C15.2 10.8 14.9 11.8 14.4 12.9',
+  '横折钩': 'M3.6 9.4 L15.2 8.8 L14.8 16.4 L13.4 15.6',
+  '横折提': 'M4 10.8 L12.8 10.2 L12.1 13.8 L17.2 8.2',
+  '横折弯钩': 'M3.8 8.4 L13.2 8.4 C15.2 8.4 15.3 10.6 15 12.6 C14.5 15.8 12.3 17.7 9.8 18.3 C8.4 18.6 7 18.4 5.9 17.7 L7.1 16.1',
+  '横折折折钩': 'M4.2 5.6 L14.2 5.6 L8.4 12.4 L16 12.4 L10.6 18.8 L12 17.7',
+  '竖折': 'M12.2 3.4 L11.9 16.6 L20.4 17.2',
+  '竖弯': 'M12.4 3.4 L12.1 10.2 C12 13 13.6 15 16.4 15.3 L20.2 15.3',
+  '竖弯钩': 'M12.4 3.2 L12.1 10.2 C12 13.6 13.9 15.8 17 16.1 C19.2 16.3 20.5 15.4 20.8 14 L19.7 12.7',
+  '竖折折钩': 'M11.9 3.2 L11.7 9.6 L19.4 10 L18.9 15.2 C18.6 17.4 17.2 18.7 15.4 19.3 L15 17.6',
+  '竖提': 'M11.9 3.4 L11.6 14.2 L17.2 9.4',
+  '竖钩': 'M12.1 3.2 L11.7 17.8 L10 16.2',
+  '撇折': 'M12.9 4.6 L7.2 14.4 L13.8 15.8',
+  '撇点': 'M12.8 3.6 C12.1 6.8 11.1 10 9.6 13 C8.8 14.3 7.8 15.4 6.6 16.2 C6.9 16.7 7.3 17.1 7.9 17.5'
+};
+function svgStroke(name,size){
+  const d = STROKE_PATH[name];
+  if(!d) return '';
+  return '<svg class="st-svg" viewBox="0 0 24 24" width="'+size+'" height="'+size+'" aria-hidden="true">'+
+    '<path d="'+d+'" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>'+
+  '</svg>';
+}
+
+/* ==================== 发音模块（音频包方案） ==================== */
+const AUDIO_DIR = { char:'audio/chars/', word:'audio/words/', slow:'audio/slow/' };
+const LS_AUDIO = 'zishi_audio_cfg_v1';
+let audioCfg = { slow:false, auto:false, tts:true };
+const audioEl = new Audio();
+const audioFail = new Set();
+let playingEl = null;
+
+function loadAudioCfg(){
+  try{ Object.assign(audioCfg, JSON.parse(localStorage.getItem(LS_AUDIO)||'{}')); }catch(e){}
+}
+function saveAudioCfg(){ localStorage.setItem(LS_AUDIO, JSON.stringify(audioCfg)); }
+
+function markPlaying(el,on){
+  if(!el || !el.classList) return;
+  if(on) el.classList.add('playing'); else el.classList.remove('playing');
+}
+
+/* 浏览器自带语音兜底（没放音频文件的字用） */
+function ttsSpeak(text, rate){
+  if(!('speechSynthesis' in window)) return false;
+  try{
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'zh-CN'; u.rate = rate || 0.95; u.pitch = 1.05;
+    const all = window.speechSynthesis.getVoices() || [];
+    const zh = all.filter(v=>/zh|Chinese/i.test(v.lang||'')||/中文|普通话/.test(v.name||''));
+    const pick = zh.find(v=>/zh[-_]CN/i.test(v.lang||'')) || zh[0];
+    if(pick) u.voice = pick;
+    window.speechSynthesis.speak(u);
+    return true;
+  }catch(e){ return false; }
+}
+
+function playFile(url, rate, onFail, el){
+  audioEl.pause();
+  audioEl.currentTime = 0;
+  audioEl.src = url;
+  audioEl.playbackRate = rate || 1;
+  audioEl.onended = ()=>markPlaying(el,false);
+  audioEl.onerror = ()=>{ markPlaying(el,false); if(onFail) onFail(); };
+  const p = audioEl.play();
+  if(p && p.catch) p.catch(()=>{ markPlaying(el,false); if(onFail) onFail(); });
+}
+
+/* 统一播放入口：文本 + 类型(char/word) + 触发按钮 */
+function playAudio(text, type, el){
+  if(!text) return;
+  type = type || 'char';
+  if(playingEl && playingEl !== el) markPlaying(playingEl,false);
+  playingEl = el;
+  markPlaying(el,true);
+
+  const file = encodeURIComponent(text) + '.mp3';
+  const slowRate = (type === 'char') ? 0.7 : 0.8;
+
+  const useTTS = ()=>{
+    if(audioCfg.tts && ttsSpeak(text, audioCfg.slow ? 0.7 : 0.95)) return;
+    markPlaying(el,false);
+    toast('🔇 还没有「' + text + '」的音频文件');
+  };
+
+  // 慢速模式：优先用 audio/slow/ 里的慢速音频，没有就正常音频降速播放
+  if(type === 'char' && audioCfg.slow && !audioFail.has('slow:' + text)){
+    playFile(AUDIO_DIR.slow + file, 1, ()=>{
+      audioFail.add('slow:' + text);
+      playAudio(text, type, el);
+    }, el);
+    return;
+  }
+  const key = type + ':' + text;
+  if(audioFail.has(key)){ useTTS(); return; }
+  playFile(AUDIO_DIR[type] + file, audioCfg.slow ? slowRate : 1, ()=>{
+    audioFail.add(key);
+    useTTS();
+  }, el);
+}
+
+/* 按钮点击入口（写在 onclick 里，阻止冒泡避免打开字卡） */
+function speakEl(el, ev){
+  if(ev){ ev.stopPropagation(); if(ev.preventDefault) ev.preventDefault(); }
+  playAudio(el.dataset.say, el.dataset.type || 'char', el);
+}
+
+/* 下载文本文件 */
+function downloadText(text, filename){
+  const blob = new Blob(['\ufeff' + text], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1200);
+}
+
+/* 导出音频文件清单（给批量生成用） */
+function exportAudioList(){
+  const words = new Set();
+  CHARS.forEach(o=>o.w.forEach(w=>words.add(w)));
+  let txt = '识字小天地 · 音频文件清单\n';
+  txt += '格式：mp3 ｜ 文件名 = 文本本身（如 水.mp3）｜ 建议普通话女声、语速稍慢\n';
+  txt += '合计 ' + (CHARS.length + words.size) + ' 个文件（单字 ' + CHARS.length + ' + 组词 ' + words.size + '）\n';
+  txt += '\n【一】单字读音 → 放入 audio/chars/ 目录\n';
+  CHARS.forEach(o=>{ txt += o.c + '.mp3\t' + o.c + '\t' + o.p + '\n'; });
+  txt += '\n【二】组词读音 → 放入 audio/words/ 目录\n';
+  [...words].forEach(w=>{ txt += w + '.mp3\t' + w + '\n'; });
+  txt += '\n【三】慢速单字（可选）→ 放入 audio/slow/ 目录\n';
+  txt += '如果不做慢速版，系统会自动把正常音频降速播放，不影响使用。\n';
+  downloadText(txt, '识字小天地-音频文件清单.txt');
+  toast('🎧 清单已下载（共 ' + (CHARS.length + words.size) + ' 个文件）');
+}
+
+/* 检测音频包：单字逐个检查是否存在 */
+async function checkAudio(){
+  if(location.protocol === 'file:'){
+    toast('⚠️ 本地文件模式无法检测，请用网址(http/https)打开');
+    return;
+  }
+  toast('🔍 正在检测 200 个单字音频…');
+  const list = CHARS.map(o=>o.c);
+  let idx = 0, ok = 0; const miss = [];
+  const worker = async ()=>{
+    while(idx < list.length){
+      const c = list[idx++];
+      try{
+        const r = await fetch(AUDIO_DIR.char + encodeURIComponent(c) + '.mp3', {method:'HEAD'});
+        if(r.ok) ok++; else miss.push(c);
+      }catch(e){ miss.push(c); }
+    }
+  };
+  await Promise.all(Array.from({length:8}, worker));
+  if(!miss.length){ toast('✅ 单字音频全部就位（200/200）'); return; }
+  downloadText('缺失的单字音频（共 ' + miss.length + ' 个）：\n' + miss.join(' '), '缺失音频清单.txt');
+  toast('检测完成：已有 ' + ok + '/200，缺失 ' + miss.length + ' 个（清单已下载）');
+}
+
+function renderAudioCfg(){
+  const set = (id,on)=>{ const e=document.querySelector('#'+id+' .sw'); if(e) e.classList.toggle('on', !!on); };
+  set('swSlow', audioCfg.slow); set('swAuto', audioCfg.auto); set('swTts', audioCfg.tts);
+}
+
 let drawing = false;
 
 function load(){
@@ -721,7 +945,10 @@ function renderHome(){
     tl.innerHTML = rec.map(o=>`
       <div class="mini-card" onclick="openModal('${o.c}')">
         <div class="em">${o.e}</div>
-        <div class="ch hanzi">${o.c}</div>
+        <div class="ch-row">
+          <span class="ch hanzi">${o.c}</span>
+          <span class="spk" data-say="${o.c}" data-type="char" onclick="speakEl(this,event)" title="点一下听读音">🔊</span>
+        </div>
         <div class="py">${o.p}</div>
         <div style="font-size:12px;color:var(--sub);margin-top:4px">${o.w[0]} · ${o.w[1]}</div>
       </div>`).join('');
@@ -782,7 +1009,10 @@ function renderCards(){
     <div class="zcard ${learned.has(o.c)?'learned':''}" onclick="openModal('${o.c}')">
       <span class="g">${o.g}</span>
       <div class="em">${o.e}</div>
-      <div class="ch hanzi">${o.c}</div>
+      <div class="ch-row">
+        <span class="ch hanzi">${o.c}</span>
+        <span class="spk" data-say="${o.c}" data-type="char" onclick="speakEl(this,event)" title="点一下听读音">🔊</span>
+      </div>
       <div class="py">${o.p} · ${o.s}画</div>
       <div class="words">${o.w.slice(0,3).map(w=>`<span>${w}</span>`).join('')}</div>
       <span class="sn">${o.x.slice(0,6)}…</span>
@@ -799,8 +1029,12 @@ function openModal(c){
   document.getElementById('mPy').textContent=o.p;
   document.getElementById('mInfo').textContent=`${o.g} · 共 ${o.s} 画`;
   document.getElementById('mX').innerHTML=`💭 <b>形象记忆：</b>${o.x}`;
-  document.getElementById('mWords').innerHTML=o.w.map(w=>`<span>${w}</span>`).join('');
-  document.getElementById('mBs').innerHTML=o.b.map((b,i)=>`<i>${i+1}.${b}</i>`).join('');
+  const mSpk=document.getElementById('mSpk');
+  mSpk.dataset.say=o.c; mSpk.classList.remove('playing');
+  document.getElementById('mWords').innerHTML=o.w.map(w=>
+    '<span data-say="'+w+'" data-type="word" onclick="speakEl(this,event)" title="点一下听读音">'+w+'<i class="spk-mini">🔊</i></span>').join('');
+  document.getElementById('mBs').innerHTML=o.b.map((b,i)=>
+    '<i>'+svgStroke(b,26)+'<b>'+(i+1)+'.'+b+'</b></i>').join('');
   const btn=document.getElementById('mBtn');
   if(learned.has(o.c)){
     btn.textContent='✅ 已学会（点击取消）'; btn.className='m-btn learned-b';
@@ -808,6 +1042,7 @@ function openModal(c){
     btn.textContent='⭐ 学会啦！'; btn.className='m-btn';
   }
   document.getElementById('modalMask').classList.add('show');
+  if(audioCfg.auto) setTimeout(()=>playAudio(o.c,'char',document.getElementById('mSpk')), 260);
 }
 function closeModal(){ document.getElementById('modalMask').classList.remove('show'); }
 
@@ -868,15 +1103,21 @@ function renderStroke(){
   const learnedNow = learned.has(o.c);
   document.getElementById('sEm').textContent=o.e;
   document.getElementById('sCh').textContent=o.c;
+  const sSpk=document.getElementById('sSpk');
+  if(sSpk){ sSpk.dataset.say=o.c; sSpk.classList.remove('playing'); }
   document.getElementById('sPy').textContent=o.p+' · '+o.g;
   document.getElementById('sStrokes').textContent='共 '+o.s+' 画';
   document.getElementById('sDone').textContent=(learnedNow?'✅ 已学会':'✏️ '+strokeStep+'/'+o.s+' 笔');
   const bs=document.getElementById('sBs');
-  bs.innerHTML=o.b.map((b,i)=>`<span class="step ${i<strokeStep?'done':''} ${i===strokeStep?'cur':''}">${b}</span>`).join('');
+  bs.innerHTML=o.b.map((b,i)=>{
+    return '<span class="step '+(i<strokeStep?'done':'')+' '+(i===strokeStep?'cur':'')+'">'+
+      svgStroke(b,26)+'<span class="nm">'+(i+1)+'.'+b+'</span></span>';
+  }).join('');
   const tip=document.getElementById('sTip');
-  tip.innerHTML= strokeStep>=o.s
+  tip.innerHTML = strokeStep>=o.s
     ? '🎉 全部笔画写完啦！再描一遍会更棒～'
-    : `第 <b>${strokeStep+1}</b> 笔：<b style="color:var(--main)">${o.b[strokeStep]||''}</b> · 照着格子里的灰色字，用手指或鼠标写一写`;
+    : '第 <b>'+(strokeStep+1)+'</b> 笔：'+svgStroke(o.b[strokeStep]||'',44)+
+      '<b style="color:var(--main)">'+(o.b[strokeStep]||'')+'</b> · 照着格子里的灰色字，用手指或鼠标写一写';
   document.getElementById('btnMark').textContent = learnedNow ? '✅ 已学会（点击取消）' : '⭐ 这个字学会啦';
   drawBoard();
   strokeStep=0;
@@ -1016,11 +1257,27 @@ PEN_COLORS.forEach(c=>{
 
 document.getElementById('btnExport').onclick=exportList;
 document.getElementById('btnReset').onclick=resetAll;
+document.getElementById('btnAudioList').onclick=exportAudioList;
+document.getElementById('btnCheckAudio').onclick=checkAudio;
+document.getElementById('swSlow').onclick=()=>{
+  audioCfg.slow=!audioCfg.slow; saveAudioCfg(); renderAudioCfg();
+  toast(audioCfg.slow?'🐢 已开启慢速跟读':'已关闭慢速跟读');
+};
+document.getElementById('swAuto').onclick=()=>{
+  audioCfg.auto=!audioCfg.auto; saveAudioCfg(); renderAudioCfg();
+  toast(audioCfg.auto?'🔊 打开字卡会自动朗读':'已关闭自动朗读');
+};
+document.getElementById('swTts').onclick=()=>{
+  audioCfg.tts=!audioCfg.tts; saveAudioCfg(); renderAudioCfg();
+  toast(audioCfg.tts?'已开启「浏览器语音兜底」':'已关闭「浏览器语音兜底」');
+};
 
 window.addEventListener('resize', ()=>{ if(curTab==='stroke') fitCanvas(); });
 
 /* ==================== 启动 ==================== */
 load();
+loadAudioCfg();
+renderAudioCfg();
 switchTab('home');
 </script>
 </body>
