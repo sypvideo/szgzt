@@ -10,3 +10,6 @@ _gen_*.py
 # 编辑器
 .vscode/
 .idea/
+
+# 从 GitHub 克隆下来的副本（嵌套仓库，不提交）
+szgzt/
