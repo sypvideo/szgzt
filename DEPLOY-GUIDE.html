@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>识字小天地 · 部署操作指南（GitHub + Vercel）</title>
+<style>
+:root{
+  --bg:#F6F8FB; --card:#fff; --ink:#2C3E50; --sub:#7F8C9B;
+  --main:#FF8A3D; --main-soft:#FFF0E3; --green:#27AE60; --green-soft:#E8F8EF;
+  --blue:#3498DB; --purple:#9B59B6; --line:#E8EDF2;
+  --shadow:0 6px 22px rgba(30,60,100,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:var(--bg);color:var(--ink);padding:30px 16px 60px}
+.wrap{max-width:760px;margin:0 auto}
+header{text-align:center;margin-bottom:26px}
+header .logo{width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,#FFB26B,#FF8A3D);display:inline-flex;align-items:center;justify-content:center;font-size:34px;box-shadow:0 8px 20px rgba(255,138,61,.35)}
+header h1{font-size:26px;margin-top:14px}
+header p{color:var(--sub);font-size:14px;margin-top:6px}
+.badge{display:inline-block;background:var(--green-soft);color:var(--green);font-size:12px;font-weight:700;border-radius:99px;padding:4px 12px;margin-top:10px}
+.card{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:22px 24px;margin-bottom:18px}
+.card h2{font-size:18px;display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.card .desc{font-size:13px;color:var(--sub);line-height:1.7;margin-bottom:16px}
+.step{display:flex;gap:14px;padding:14px 0;border-top:1px dashed var(--line)}
+.step:first-of-type{border-top:none}
+.step .num{flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--main-soft);color:#b2530a;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.step .body{flex:1}
+.step .body b{font-size:15px}
+.step .body .detail{font-size:13.5px;color:#455;line-height:1.8;margin-top:6px}
+.step .body .detail code{background:#F3F6FA;border:1px solid var(--line);border-radius:6px;padding:1px 8px;font-size:12.5px;color:#c0392b;font-family:Consolas,monospace}
+.step .body .detail .tip{background:#FFFBE8;border:1px solid #F5E6A8;border-radius:10px;padding:10px 14px;font-size:13px;color:#8a6d1a;margin-top:10px;line-height:1.7}
+.step .body .detail .warn{background:#FDECEC;border:1px solid #F5C6C6;border-radius:10px;padding:10px 14px;font-size:13px;color:#b03a2e;margin-top:10px;line-height:1.7}
+.files{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.file{background:#F3F6FA;border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:13px;text-align:center}
+.file .ic{font-size:22px}
+.file .nm{font-family:Consolas,monospace;font-weight:700;margin-top:4px}
+.file .desc{font-size:11px;color:var(--sub);margin-top:2px}
+.urlbox{background:#F6FBF8;border:1px solid #CDEBDA;border-radius:12px;padding:14px;text-align:center;font-size:15px;color:var(--green);font-weight:700;margin-top:12px}
+.qa{border-top:1px dashed var(--line);padding:12px 0}
+.qa:first-of-type{border-top:none}
+.qa b{font-size:14px;display:block;margin-bottom:4px}
+.qa p{font-size:13.5px;color:#455;line-height:1.8}
+footer{text-align:center;color:var(--sub);font-size:12px;margin-top:24px;line-height:1.8}
+.check{list-style:none;margin-top:10px}
+.check li{font-size:13.5px;color:#455;line-height:2;padding-left:26px;position:relative}
+.check li::before{content:"✅";position:absolute;left:0;top:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="logo">📖</div>
+  <h1>识字小天地 · 部署操作指南</h1>
+  <p>跟着步骤点鼠标，把工作台发布到网上，手机随时能用</p>
+  <span class="badge">预计耗时 10 分钟 · 免费</span>
+</header>
+
+<div class="card">
+  <h2>🗂️ 先认识要上传的文件</h2>
+  <p class="desc">你的电脑上有「识字小天地」文件夹，里面只需要上传下面 2 个文件：</p>
+  <div class="files">
+    <div class="file"><div class="ic">📄</div><div class="nm">index.html</div><div class="desc">主程序（核心文件）</div></div>
+    <div class="file"><div class="ic">⚙️</div><div class="nm">vercel.json</div><div class="desc">部署配置文件</div></div>
+  </div>
+  <ul class="check">
+    <li>两个文件都在「识字小天地」文件夹里，已就绪</li>
+    <li>其余文件（README、指南）不用上传，不影响运行</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>📦 第一步：上传到 GitHub</h2>
+  <p class="desc">GitHub 相当于你的"网盘+仓库"，把工作台代码存进去。</p>
+
+  <div class="step">
+    <div class="num">1</div>
+    <div class="body">
+      <b>创建仓库</b>
+      <div class="detail">
+        浏览器打开 <code>https://github.com/new</code>（没账号先注册，免费）
+        <ul class="check">
+          <li>Repository name 填：<code>shizi-200</code>（可自定义英文名）</li>
+          <li>Public / Private 二选一（都免费）</li>
+          <li>不要勾选 "Add a README file"</li>
+        </ul>
+        点绿色按钮 <b>Create repository</b>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">2</div>
+    <div class="body">
+      <b>上传文件</b>
+      <div class="detail">
+        进入新仓库页面 → 点 <code>Add file</code> → 点 <code>Upload files</code>
+        <div class="tip">💡 把「识字小天地」文件夹里的 index.html 和 vercel.json <b>拖进</b>上传区</div>
+        页面下方点 <code>Commit changes</code>，完成上传 ✅
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">3</div>
+    <div class="body">
+      <b>确认上传成功</b>
+      <div class="detail">
+        仓库主页应该能看到两个文件列表：<code>index.html</code> 和 <code>vercel.json</code>
+        <div class="warn">⚠️ 如果看不到文件，说明没传上去，重复第 2 步</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>🚀 第二步：用 Vercel 部署上线</h2>
+  <p class="desc">Vercel 是免费托管平台，自动给你的 GitHub 仓库生成一个网址。</p>
+
+  <div class="step">
+    <div class="num">1</div>
+    <div class="body">
+      <b>登录 Vercel 并导入仓库</b>
+      <div class="detail">
+        打开 <code>https://vercel.com</code> → 点 <code>Sign Up</code> → 选 <code>Continue with GitHub</code>（用同一个 GitHub 账号一键登录）
+        <br>登录后点 <code>Add New…</code> → <code>Project</code>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">2</div>
+    <div class="body">
+      <b>Import 你的仓库</b>
+      <div class="detail">
+        在 "Import Git Repository" 列表里找到 <code>shizi-200</code> → 点 <code>Import</code>
+        <div class="tip">💡 如果列表里看不到，点列表上方的 <code>Adjust GitHub App Permissions</code> 授权一下即可</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">3</div>
+    <div class="body">
+      <b>保持默认配置，直接 Deploy</b>
+      <div class="detail">
+        <ul class="check">
+          <li>Framework Preset：自动识别为 <b>Other</b>（不用改）</li>
+          <li>Build Command / Output Directory：<b>留空</b>（不用填）</li>
+        </ul>
+        点 <b>Deploy</b> 按钮，等 1 分钟左右
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">4</div>
+    <div class="body">
+      <b>部署完成，拿到网址</b>
+      <div class="detail">
+        成功后自动跳到恭喜页面，你的网址类似：
+        <div class="urlbox">https://shizi-200.vercel.app</div>
+        点开它，识字小天地就跑起来了 🎉
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>📱 第三步：手机上使用</h2>
+  <div class="step">
+    <div class="num">1</div>
+    <div class="body">
+      <b>手机浏览器打开网址</b>
+      <div class="detail">在手机浏览器输入你的 Vercel 网址，即可使用，支持手指描红 ✍️</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="num">2</div>
+    <div class="body">
+      <b>添加到主屏幕（变成 App 图标）</b>
+      <div class="detail">
+        iPhone：Safari 打开网址 → 底部「分享」→「添加到主屏幕」<br>
+        安卓：Chrome 打开网址 → 右上角「⋮」→「添加到主屏幕」<br>
+        以后点图标就能直接进入，全屏无浏览器地址栏，体验接近 App
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>❓ 常见问题</h2>
+  <div class="qa"><b>Q：以后改版了怎么更新？</b><p>在电脑上改好 index.html，重新拖到 GitHub 仓库覆盖（Commit 一次），Vercel 会在 1~2 分钟内自动重新部署，网址不变。</p></div>
+  <div class="qa"><b>Q：孩子的学习进度会丢吗？</b><p>不会因更新而丢。进度存在"使用设备"的浏览器本地（localStorage），只要不在浏览器里清除网站数据就一直保留。注意：手机和电脑是两套独立进度，互不同步。</p></div>
+  <div class="qa"><b>Q：Private（私有）仓库能部署吗？</b><p>可以，Vercel 免费版支持私有仓库部署，网址仍公开可访问。</p></div>
+  <div class="qa"><b>Q：部署失败怎么办？</b><p>最常见原因：文件没传全（少了 vercel.json 无妨，但 index.html 必须有）。检查 GitHub 仓库是否有 index.html，然后回 Vercel 点 <b>Redeploy</b>（Deployments 页面 → 三个点菜单）。</p></div>
+  <div class="qa"><b>Q：网址太丑想改？</b><p>Vercel 项目 → Settings → Domains，可以添加自定义域名；免费版也可修改项目名来获得新网址（部署后 Vercel 会分配一个 <code>xxx.vercel.app</code> 专属名称）。</p></div>
+</div>
+
+<footer>
+  识字小天地 · 部署指南 v1.0<br>
+  部署完成后把这个网址收藏好，随时给宝贝用 📖
+</footer>
+</div>
+</body>
+</html>

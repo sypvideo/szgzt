@@ -1,0 +1,12 @@
+# 系统与临时文件（不需要上传）
+.DS_Store
+Thumbs.db
+desktop.ini
+__pycache__/
+*.pyc
+_check.js
+_gen_*.py
+
+# 编辑器
+.vscode/
+.idea/

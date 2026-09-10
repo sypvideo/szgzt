@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FF8A3D">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="识字小天地">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23FF8A3D'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle'%3E%F0%9F%93%96%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23FF8A3D'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle'%3E%F0%9F%93%96%3C/text%3E%3C/svg%3E">
+<title>识字小天地 · 200字识字管理台（4-6岁）</title>
+<style>
+:root{
+  --bg:#FFF7EF; --card:#FFFFFF; --ink:#4A3F35; --sub:#9A8C7F;
+  --main:#FF8A3D; --main-soft:#FFE3CC; --green:#4CAF6E; --green-soft:#DDF3E4;
+  --blue:#4D96FF; --pink:#F06595; --line:#F0E4D8;
+  --shadow:0 6px 20px rgba(120,80,40,.08);
+  --radius:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:"PingFang SC","Microsoft YaHei","Segoe UI",system-ui,sans-serif;
+  background:var(--bg); color:var(--ink);
+  padding-bottom:calc(40px + env(safe-area-inset-bottom));
+}
+.hanzi{font-family:"Kaiti SC","STKaiti","楷体","KaiTi","FZKai-Z03",serif}
+
+/* ============ 顶栏 ============ */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between; gap:14px;
+  padding:20px 22px 14px; max-width:1180px; margin:0 auto; flex-wrap:wrap;
+}
+.brand{display:flex; align-items:center; gap:14px}
+.logo{
+  width:56px;height:56px;border-radius:18px;font-size:30px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#FFB26B,#FF8A3D);
+  box-shadow:0 6px 14px rgba(255,138,61,.35);
+}
+.brand h1{font-size:26px;letter-spacing:1px}
+.brand p{font-size:13px;color:var(--sub);margin-top:3px}
+.top-progress{display:flex;align-items:center;gap:10px;background:#fff;padding:8px 14px 8px 8px;border-radius:99px;box-shadow:var(--shadow)}
+.top-progress .ring{position:relative;width:52px;height:52px}
+.top-progress .ring svg{transform:rotate(-90deg)}
+.top-progress .ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--main)}
+.top-progress .txt{font-size:13px;color:var(--sub)}
+.top-progress .txt b{color:var(--ink);font-size:15px}
+
+/* ============ 导航 ============ */
+.tabs{
+  display:flex;gap:8px;max-width:1180px;margin:6px auto 0;padding:0 22px;
+  flex-wrap:wrap;
+}
+.tabs button{
+  border:none;cursor:pointer;padding:10px 20px;border-radius:99px;
+  background:#fff;color:var(--ink);font-size:15px;font-weight:600;
+  box-shadow:var(--shadow);transition:.2s;
+}
+.tabs button.active{background:var(--main);color:#fff;box-shadow:0 6px 14px rgba(255,138,61,.4)}
+.tabs button:hover{transform:translateY(-2px)}
+
+main{max-width:1180px;margin:0 auto;padding:18px 22px}
+
+/* ============ 通用卡片 ============ */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
+.card h2{font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card h2 small{font-size:12px;color:var(--sub);font-weight:400;margin-left:auto}
+
+/* ============ 工作台 ============ */
+.hero{
+  background:linear-gradient(120deg,#FFE9D2,#FFD9B8);
+  border-radius:22px;padding:26px 26px 22px;margin-bottom:18px;
+  display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;
+}
+.hero h2{font-size:24px}
+.hero p{color:#8a6a4d;margin-top:6px;font-size:14px;line-height:1.7}
+.hero .badge{display:inline-block;background:#fff;border-radius:99px;padding:4px 12px;font-size:12px;color:var(--main);font-weight:600;margin:8px 6px 0 0}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:18px}
+.stat{background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:var(--shadow)}
+.stat .num{font-size:30px;font-weight:800;color:var(--main)}
+.stat .lbl{font-size:12px;color:var(--sub);margin-top:4px}
+.today-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.mini-card{
+  background:#fff;border-radius:16px;padding:14px;text-align:center;cursor:pointer;
+  box-shadow:var(--shadow);transition:.2s;border:2px solid transparent;
+}
+.mini-card:hover{transform:translateY(-3px);border-color:var(--main-soft)}
+.mini-card .em{font-size:34px;line-height:1.2}
+.mini-card .ch{font-size:38px;font-weight:700;color:var(--ink);margin:4px 0}
+.mini-card .py{color:var(--pink);font-size:14px}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.cat-item{background:#fff;border-radius:16px;padding:14px;box-shadow:var(--shadow);cursor:pointer;transition:.2s}
+.cat-item:hover{transform:translateY(-3px)}
+.cat-item .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.cat-item .nm{font-size:14px;font-weight:700}
+.cat-item .cnt{font-size:12px;color:var(--sub)}
+.bar{height:8px;background:#F3E8DC;border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;transition:width .5s}
+
+/* ============ 字卡乐园 ============ */
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.chip{border:2px solid var(--line);background:#fff;border-radius:99px;padding:6px 14px;font-size:13px;cursor:pointer;transition:.2s;color:var(--ink)}
+.chip.active{border-color:var(--main);background:var(--main-soft);color:#b2530a;font-weight:600}
+.chip.sel{background:var(--ink);color:#fff;border-color:var(--ink)}
+.search{
+  flex:1;min-width:160px;border:2px solid var(--line);border-radius:99px;
+  padding:8px 16px;font-size:14px;outline:none;background:#fff;
+}
+.search:focus{border-color:var(--main)}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:14px}
+.zcard{
+  background:#fff;border-radius:18px;padding:16px 12px 12px;text-align:center;cursor:pointer;
+  box-shadow:var(--shadow);position:relative;transition:.2s;border:2px solid transparent;
+}
+.zcard:hover{transform:translateY(-4px);border-color:var(--main-soft)}
+.zcard.learned{border-color:var(--green-soft)}
+.zcard.learned::after{
+  content:"✓";position:absolute;top:8px;right:10px;width:22px;height:22px;border-radius:50%;
+  background:var(--green);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;font-weight:700;
+}
+.zcard .em{
+  width:64px;height:64px;border-radius:50%;margin:0 auto 8px;font-size:34px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#FFF3E4,#FFE3CC);
+}
+.zcard .ch{font-size:42px;font-weight:700;line-height:1.1}
+.zcard .py{color:var(--pink);font-size:14px;margin-top:2px}
+.zcard .words{margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.zcard .words span{background:#F6EFE6;border-radius:6px;padding:2px 7px;font-size:11px;color:#8a6a4d}
+.zcard .g{position:absolute;top:8px;left:10px;font-size:10px;background:var(--main-soft);color:#b2530a;border-radius:99px;padding:2px 8px}
+.zcard .sn{position:absolute;bottom:8px;right:10px;font-size:10px;color:#c4b5a6}
+
+/* ============ 弹窗 ============ */
+.modal-mask{position:fixed;inset:0;background:rgba(60,40,20,.45);display:none;align-items:center;justify-content:center;z-index:99;padding:20px}
+.modal-mask.show{display:flex}
+.modal{
+  background:#fff;border-radius:24px;max-width:520px;width:100%;padding:26px;position:relative;
+  box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow:auto;
+}
+.modal .close{position:absolute;top:12px;right:16px;border:none;background:#F3E8DC;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:16px;color:#8a6a4d}
+.modal .m-head{display:flex;gap:18px;align-items:center;margin-bottom:14px}
+.modal .m-em{width:96px;height:96px;border-radius:50%;font-size:52px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#FFF3E4,#FFE3CC);flex-shrink:0}
+.modal .m-ch{font-size:74px;font-weight:700;line-height:1}
+.modal .m-py{color:var(--pink);font-size:18px;margin-top:6px}
+.modal .m-info{font-size:13px;color:var(--sub);margin-top:6px}
+.modal .m-x{background:#FFF8EE;border-radius:12px;padding:12px 14px;font-size:14px;color:#8a6a4d;line-height:1.6;margin-bottom:14px}
+.modal .m-x b{color:var(--main)}
+.m-words{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.m-words span{background:#F6EFE6;border-radius:10px;padding:6px 12px;font-size:15px;color:var(--ink);font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.15s}
+.m-words span:hover{background:#EFE3D5}
+.m-words span:active{transform:scale(.96)}
+
+/* ============ 发音喇叭 ============ */
+.spk{
+  display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+  width:28px;height:28px;border-radius:50%;background:var(--main-soft);color:#b2530a;
+  font-size:14px;cursor:pointer;user-select:none;transition:.15s;line-height:1;
+}
+.spk:hover{transform:scale(1.12);background:#FFD9B8}
+.spk:active{transform:scale(.92)}
+.spk.playing{background:var(--main);color:#fff;animation:pulse .9s infinite}
+.spk.big{width:40px;height:40px;font-size:19px}
+.spk-mini{font-size:11px;opacity:.7;font-style:normal}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,138,61,.55)}50%{box-shadow:0 0 0 7px rgba(255,138,61,0)}}
+.ch-row{display:flex;align-items:center;justify-content:center;gap:8px}
+.audio-set{display:flex;flex-direction:column;gap:12px;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+.switch-row{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--ink);cursor:pointer}
+.switch-row .sw{width:44px;height:24px;border-radius:99px;background:#E4D8CA;position:relative;transition:.2s;flex-shrink:0}
+.switch-row .sw::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.switch-row .sw.on{background:var(--green)}
+.switch-row .sw.on::after{left:22px}
+.switch-row .desc{font-size:12px;color:var(--sub)}
+.m-bs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.m-bs i{font-style:normal;background:#F6EFE6;border-radius:10px;padding:5px 8px;font-size:12px;color:#8a6a4d;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:52px}
+.m-bs i b{font-weight:500;font-size:11px;color:#9a8c7f}
+.m-btn{width:100%;border:none;border-radius:14px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(135deg,#FFB26B,#FF8A3D);box-shadow:0 6px 14px rgba(255,138,61,.35)}
+.m-btn.learned-b{background:linear-gradient(135deg,#7ED6A5,#4CAF6E)}
+.m-btn:hover{transform:translateY(-2px)}
+
+/* ============ 笔画练习 ============ */
+.stroke-wrap{display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:20px;align-items:start}
+.pad-box{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+#padCanvas{width:100%;aspect-ratio:1;border-radius:14px;background:#FFFDF9;touch-action:none;display:block;cursor:crosshair;border:2px solid var(--line)}
+.pad-tools{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center}
+.color-dot{width:30px;height:30px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:.15s}
+.color-dot.on{border-color:var(--ink);transform:scale(1.15)}
+.tool-btn{border:2px solid var(--line);background:#fff;border-radius:99px;padding:6px 14px;font-size:13px;cursor:pointer}
+.tool-btn:hover{border-color:var(--main)}
+.stroke-info{display:flex;flex-direction:column;gap:14px}
+.s-panel{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
+.s-head{display:flex;align-items:center;gap:16px}
+.s-em{width:74px;height:74px;border-radius:50%;font-size:38px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#FFF3E4,#FFE3CC)}
+.s-ch{font-size:64px;font-weight:700;line-height:1}
+.s-py{color:var(--pink);font-size:16px;margin-top:4px}
+.s-bs{display:flex;flex-wrap:wrap;gap:8px}
+.s-bs .step{flex:1 0 calc(20% - 8px);min-width:56px;text-align:center;background:#F6EFE6;border-radius:10px;padding:6px 4px;font-size:13px;color:#9a8c7f;border:2px solid transparent;transition:.25s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.s-bs .step .nm{font-size:11px;line-height:1}
+.s-bs .step.done{background:var(--green-soft);color:var(--green);border-color:#b5e3c6}
+.s-bs .step.cur{background:var(--main);color:#fff;border-color:var(--main);transform:scale(1.06);font-weight:700}
+.st-svg{display:block;flex-shrink:0}
+.s-tip svg{display:inline-block;vertical-align:middle;margin:0 4px}
+.s-tip{font-size:13px;color:var(--sub);line-height:1.7;background:#FFF8EE;border-radius:12px;padding:12px;border-left:4px solid var(--main)}
+.s-nav{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.s-nav button{border:none;border-radius:12px;padding:12px;font-size:15px;font-weight:600;cursor:pointer;background:#F6EFE6;color:var(--ink)}
+.s-nav button.primary{background:linear-gradient(135deg,#FFB26B,#FF8A3D);color:#fff;grid-column:1/-1}
+.s-nav button:hover{transform:translateY(-2px)}
+
+/* ============ 报告 ============ */
+.r-chart{display:flex;flex-direction:column;gap:9px}
+.r-row{display:grid;grid-template-columns:86px 1fr 60px;gap:10px;align-items:center;font-size:13px}
+.r-row .nm{color:#8a6a4d}
+.r-row .val{text-align:right;color:var(--sub);font-size:12px}
+.mile{margin-top:14px}
+.mile .m-h{display:flex;justify-content:space-between;font-size:13px;color:var(--sub);margin-bottom:8px}
+.mile .m-bar{height:14px;background:#F3E8DC;border-radius:99px;position:relative;overflow:hidden}
+.mile .m-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:linear-gradient(90deg,#FFB26B,#FF8A3D)}
+.mile .m-now{position:absolute;top:-4px;bottom:-4px;width:3px;background:var(--ink);border-radius:2px}
+.week{display:flex;gap:8px;align-items:flex-end;height:120px;padding-top:10px}
+.week .d{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+.week .d .col{width:100%;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,#FFB26B,#FF8A3D);min-height:4px}
+.week .d .lb{font-size:11px;color:var(--sub)}
+.export-row{display:flex;gap:10px;flex-wrap:wrap}
+.export-row button{border:none;border-radius:12px;padding:12px 18px;font-size:14px;font-weight:600;cursor:pointer;background:#F6EFE6;color:var(--ink)}
+.export-row button.danger{background:#FDE8E8;color:#c0392b}
+.export-row button:hover{transform:translateY(-2px)}
+
+/* ============ 提示 ============ */
+.toast{
+  position:fixed;left:50%;bottom:40px;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:#fff;padding:12px 24px;border-radius:99px;font-size:15px;
+  opacity:0;transition:.3s;z-index:120;pointer-events:none;box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.celebrate{animation:pop .45s ease}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+.empty{text-align:center;color:var(--sub);padding:40px 0;font-size:15px}
+
+@media(max-width:760px){
+  .stroke-wrap{grid-template-columns:1fr}
+  .brand h1{font-size:22px}
+  .hero h2{font-size:20px}
+  .topbar{padding:14px 14px 10px}
+  .tabs{padding:0 14px;gap:6px}
+  .tabs button{padding:9px 14px;font-size:14px}
+  main{padding:14px}
+  .hero .stat-grid{min-width:0;max-width:100%;grid-template-columns:repeat(2,1fr)}
+  .card{padding:16px}
+  .top-progress{padding:6px 10px 6px 6px}
+  .top-progress .ring{width:44px;height:44px}
+  .top-progress .ring svg{width:44px;height:44px}
+  .top-progress .ring b{font-size:11px}
+  .top-progress .txt{font-size:12px}
+}
+@media(max-width:420px){
+  .zcard .ch{font-size:36px}
+  .zcard .em{width:56px;height:56px;font-size:30px}
+  .modal .m-ch{font-size:60px}
+  .modal .m-em{width:80px;height:80px;font-size:44px}
+  .s-ch{font-size:54px}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">📖</div>
+    <div>
+      <h1>识字小天地</h1>
+      <p>4岁 → 6岁 · 常用 200 字学习计划</p>
+    </div>
+  </div>
+  <div class="top-progress">
+    <div class="ring">
+      <svg width="52" height="52" viewBox="0 0 52 52">
+        <circle cx="26" cy="26" r="22" fill="none" stroke="#F3E8DC" stroke-width="7"/>
+        <circle id="ringBar" cx="26" cy="26" r="22" fill="none" stroke="#FF8A3D" stroke-width="7"
+          stroke-linecap="round" stroke-dasharray="138.2" stroke-dashoffset="138.2"/>
+      </svg>
+      <b id="ringPct">0%</b>
+    </div>
+    <div class="txt">已学 <b id="topCount">0</b> / 200 字</div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button data-tab="home" class="active">🏠 工作台</button>
+  <button data-tab="cards">🃏 字卡乐园</button>
+  <button data-tab="stroke">✍️ 笔画练习</button>
+  <button data-tab="report">📊 学习报告</button>
+</nav>
+
+<main>
+  <!-- ================= 工作台 ================= -->
+  <section id="home">
+    <div class="hero">
+      <div>
+        <h2>宝贝，今天学几个字呀？😊</h2>
+        <p id="heroLine"></p>
+        <span class="badge" id="heroDays"></span>
+        <span class="badge" id="heroGoal"></span>
+      </div>
+      <div class="stat-grid" style="min-width:280px;flex:1;max-width:520px;margin:0">
+        <div class="stat"><div class="num" id="stLearned">0</div><div class="lbl">已认识</div></div>
+        <div class="stat"><div class="num" style="color:var(--green)" id="stRemain">200</div><div class="lbl">待学习</div></div>
+        <div class="stat"><div class="num" style="color:var(--blue)" id="stMonth">9</div><div class="lbl">本月目标</div></div>
+        <div class="stat"><div class="num" style="color:var(--pink)" id="stDays">0</div><div class="lbl">学习天数</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🌟 今日推荐 <small>每天 5 个新字，轻轻松松</small></h2>
+      <div class="today-cards" id="todayList"></div>
+    </div>
+
+    <div class="card">
+      <h2>🗂️ 分类进度 <small>点击分类去字卡乐园</small></h2>
+      <div class="cat-grid" id="catList"></div>
+    </div>
+
+    <div class="card">
+      <h2>📅 最近 7 天学习记录</h2>
+      <div class="week" id="weekChart"></div>
+    </div>
+  </section>
+
+  <!-- ================= 字卡乐园 ================= -->
+  <section id="cards" hidden>
+    <div class="card">
+      <h2>🃏 字卡乐园 <small id="cardCount"></small></h2>
+      <div class="toolbar">
+        <input class="search" id="searchInput" placeholder="🔍 搜索字或拼音，如：水 / shui">
+        <button class="chip" data-filter="all" id="fAll">全部</button>
+        <button class="chip" data-filter="learned" id="fLearned">已学会</button>
+        <button class="chip" data-filter="todo" id="fTodo">还没学</button>
+      </div>
+      <div class="toolbar" id="catChips"></div>
+      <div class="card-grid" id="cardGrid"></div>
+      <div class="empty" id="cardEmpty" hidden>没有找到匹配的字哦～</div>
+    </div>
+  </section>
+
+  <!-- ================= 笔画练习 ================= -->
+  <section id="stroke" hidden>
+    <div class="stroke-wrap">
+      <div class="pad-box">
+        <canvas id="padCanvas" width="600" height="600"></canvas>
+        <div class="pad-tools">
+          <div id="colorDots" style="display:flex;gap:8px;margin-right:auto"></div>
+          <button class="tool-btn" id="btnClear">🧽 清空</button>
+          <button class="tool-btn" id="btnHint">💡 看笔顺</button>
+        </div>
+      </div>
+      <div class="stroke-info">
+        <div class="s-panel">
+          <div class="s-head">
+            <div class="s-em" id="sEm">🌞</div>
+            <div>
+              <div class="ch-row" style="justify-content:flex-start">
+                <div class="s-ch hanzi" id="sCh">日</div>
+                <span class="spk" id="sSpk" data-say="" data-type="char" onclick="speakEl(this,event)" title="点一下听读音">🔊</span>
+              </div>
+              <div class="s-py" id="sPy">rì</div>
+            </div>
+            <div style="margin-left:auto;text-align:right;font-size:13px;color:var(--sub)">
+              <div id="sStrokes">共 4 画</div>
+              <div id="sDone">已写 0 笔</div>
+            </div>
+          </div>
+        </div>
+        <div class="s-panel">
+          <h2 style="font-size:15px;margin-bottom:10px">✏️ 笔顺步骤</h2>
+          <div class="s-bs" id="sBs"></div>
+          <div class="s-tip" id="sTip"></div>
+        </div>
+        <div class="s-nav">
+          <button id="btnPrev">← 上一个字</button>
+          <button id="btnNext">下一个字 →</button>
+          <button class="primary" id="btnMark">⭐ 这个字学会啦</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 学习报告 ================= -->
+  <section id="report" hidden>
+    <div class="card">
+      <h2>📊 学习总览</h2>
+      <div class="stat-grid">
+        <div class="stat"><div class="num" id="rLearned">0</div><div class="lbl">已认识</div></div>
+        <div class="stat"><div class="num" style="color:var(--green)" id="rRemain">200</div><div class="lbl">待学习</div></div>
+        <div class="stat"><div class="num" style="color:var(--blue)" id="rRate">0%</div><div class="lbl">完成率</div></div>
+        <div class="stat"><div class="num" style="color:var(--pink)" id="rDays">0</div><div class="lbl">累计学习天数</div></div>
+      </div>
+      <div class="mile">
+        <div class="m-h"><span>⏳ 4岁 → 6岁 识字旅程</span><span id="mileLbl"></span></div>
+        <div class="m-bar">
+          <i id="mileBar"></i>
+          <div class="m-now" id="mileNow" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>🗂️ 各类别掌握情况</h2>
+      <div class="r-chart" id="rChart"></div>
+    </div>
+    <div class="card">
+      <h2>🔊 发音设置</h2>
+      <div class="audio-set" style="margin-top:0;padding-top:0;border-top:none">
+        <div class="switch-row" id="swSlow"><span class="sw"></span><div>慢速跟读<div class="desc">点喇叭时用 0.7 倍速朗读，方便孩子跟读模仿</div></div></div>
+        <div class="switch-row" id="swAuto"><span class="sw"></span><div>自动朗读<div class="desc">打开字卡时自动读一遍这个字</div></div></div>
+        <div class="switch-row" id="swTts"><span class="sw on"></span><div>缺失时用浏览器语音顶上<div class="desc">还没放音频文件的字，自动用设备自带语音朗读</div></div></div>
+      </div>
+      <div class="export-row" style="margin-top:16px">
+        <button id="btnAudioList">🎧 导出音频文件清单</button>
+        <button id="btnCheckAudio">🔍 检测音频包状态</button>
+      </div>
+      <div style="font-size:12px;color:var(--sub);margin-top:10px;line-height:1.7">
+        音频文件放在项目的 <b>audio/chars/</b>（单字）和 <b>audio/words/</b>（组词）文件夹里，文件名用汉字本身，例如 <b>水.mp3</b>、<b>喝水.mp3</b>。
+      </div>
+    </div>
+    <div class="card">
+      <h2>📤 家长工具</h2>
+      <div class="export-row">
+        <button id="btnExport">📋 导出已学字清单</button>
+        <button id="btnReset" class="danger">🗑️ 重置全部进度</button>
+      </div>
+      <div style="font-size:12px;color:var(--sub);margin-top:12px;line-height:1.7">
+        💡 小贴士：每天固定时间（如睡前 10 分钟）学 3~5 个新字 + 复习旧字，坚持 24 个月即可达成 200 字目标。
+        多在生活中指认（路牌、包装、绘本），识字效果翻倍哦！
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ================= 大字卡弹窗 ================= -->
+<div class="modal-mask" id="modalMask">
+  <div class="modal">
+    <button class="close" id="modalClose">✕</button>
+    <div class="m-head">
+      <div class="m-em" id="mEm">🌞</div>
+      <div>
+        <div class="ch-row" style="justify-content:flex-start">
+          <div class="m-ch hanzi" id="mCh">日</div>
+          <span class="spk big" id="mSpk" data-say="" data-type="char" onclick="speakEl(this,event)" title="点一下听读音">🔊</span>
+        </div>
+        <div class="m-py" id="mPy">rì</div>
+        <div class="m-info" id="mInfo">自然 · 共 4 画</div>
+      </div>
+    </div>
+    <div class="m-x" id="mX"></div>
+    <div style="font-size:13px;color:var(--sub);margin-bottom:6px">🔤 组词 <span style="font-size:11px">（点词听读音）</span></div>
+    <div class="m-words" id="mWords"></div>
+    <div style="font-size:13px;color:var(--sub);margin-bottom:6px">✏️ 笔顺</div>
+    <div class="m-bs" id="mBs"></div>
+    <button class="m-btn" id="mBtn">⭐ 学会啦！</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* ==================== 200 字数据 ==================== */
+const CATS = ['数字','方位','比一比','颜色','自然','身体','动物','植物','食物','家人','动作','物品','时间'];
+const CAT_COLOR = {
+  '数字':'#FF6B6B','方位':'#4D96FF','比一比':'#FF9F1C','颜色':'#B980F0',
+  '自然':'#22B8CF','身体':'#F06595','动物':'#FFA94D','植物':'#51CF66',
+  '食物':'#FF922B','家人':'#F783AC','动作':'#4DABF7','物品':'#748FFC','时间':'#69DB7C'
+};
+
+const CHARS = [
+/* 数字 */
+{c:'一',p:'yī',s:1,w:['一个','一天','星期一'],e:'1️⃣',g:'数字',b:['横'],x:'一根直直的棍子'},
+{c:'二',p:'èr',s:2,w:['二月','两岁','星期二'],e:'2️⃣',g:'数字',b:['横','横'],x:'两根平行的筷子'},
+{c:'三',p:'sān',s:3,w:['三个','三月','三只'],e:'3️⃣',g:'数字',b:['横','横','横'],x:'三根横着的小棍'},
+{c:'四',p:'sì',s:5,w:['四个','四方','四季'],e:'4️⃣',g:'数字',b:['竖','横折','撇','竖弯','横'],x:'方方正正像窗框'},
+{c:'五',p:'wǔ',s:4,w:['五个','五月','五星'],e:'5️⃣',g:'数字',b:['横','竖','横折','横'],x:'五笔写成，像手掌'},
+{c:'六',p:'liù',s:4,w:['六个','六月','六天'],e:'6️⃣',g:'数字',b:['点','横','撇','点'],x:'一点一横加两点，像小亭子'},
+{c:'七',p:'qī',s:2,w:['七个','七月','七天'],e:'7️⃣',g:'数字',b:['横','竖弯钩'],x:'横加弯钩，像小拐杖'},
+{c:'八',p:'bā',s:2,w:['八个','八月','八天'],e:'8️⃣',g:'数字',b:['撇','捺'],x:'两笔分开像树杈'},
+{c:'九',p:'jiǔ',s:2,w:['九个','九月','九天'],e:'9️⃣',g:'数字',b:['撇','横折弯钩'],x:'一撇一钩，像数字 9'},
+{c:'十',p:'shí',s:2,w:['十个','十月','十分'],e:'🔟',g:'数字',b:['横','竖'],x:'横竖交叉，像十字路口'},
+/* 方位 */
+{c:'上',p:'shàng',s:3,w:['上面','上学','上下'],e:'⬆️',g:'方位',b:['竖','横','横'],x:'一竖一横，东西在上面'},
+{c:'下',p:'xià',s:3,w:['下面','下雨','坐下'],e:'⬇️',g:'方位',b:['横','竖','点'],x:'一横下面一竖一点'},
+{c:'左',p:'zuǒ',s:5,w:['左边','左手','左右'],e:'⬅️',g:'方位',b:['横','撇','横','竖','横'],x:'左手边的方向'},
+{c:'右',p:'yòu',s:5,w:['右边','右手','左右'],e:'➡️',g:'方位',b:['横','撇','竖','横折','横'],x:'右手边的方向'},
+{c:'中',p:'zhōng',s:4,w:['中间','中午','中国'],e:'🎯',g:'方位',b:['竖','横折','横','竖'],x:'一竖穿过方框，正中间'},
+{c:'前',p:'qián',s:9,w:['前面','以前','前后'],e:'🔜',g:'方位',b:['点','撇','横','竖','横折钩','横','横','竖','竖钩'],x:'像小船向前划'},
+{c:'后',p:'hòu',s:6,w:['后面','后来','前后'],e:'🔙',g:'方位',b:['撇','撇','横','竖','横折','横'],x:'双人旁，走在后面'},
+{c:'里',p:'lǐ',s:7,w:['里面','心里','家里'],e:'🏠',g:'方位',b:['竖','横折','横','横','竖','横','横'],x:'田字穿上衣，东西在里头'},
+{c:'外',p:'wài',s:5,w:['外面','门外','外面'],e:'🏞️',g:'方位',b:['撇','横撇','点','竖','点'],x:'左边夕右边卜，在外面'},
+/* 比一比 */
+{c:'大',p:'dà',s:3,w:['大人','大家','大小'],e:'🐘',g:'比一比',b:['横','撇','捺'],x:'张开双手，好大的样子'},
+{c:'小',p:'xiǎo',s:3,w:['小孩','小心','大小'],e:'🐭',g:'比一比',b:['竖钩','撇','点'],x:'竖钩加两点，小小的'},
+{c:'多',p:'duō',s:6,w:['多少','很多','多么'],e:'🍇',g:'比一比',b:['撇','横撇','点','撇','横撇','点'],x:'两个夕阳叠起来，很多'},
+{c:'少',p:'shǎo',s:4,w:['多少','少见','少数'],e:'🍬',g:'比一比',b:['竖','点','撇','撇'],x:'一竖四点，少少的'},
+{c:'长',p:'cháng',s:4,w:['长大','长江','长短'],e:'🐍',g:'比一比',b:['撇','横','竖提','捺'],x:'像长长的丝线'},
+{c:'短',p:'duǎn',s:12,w:['长短','短裤','短发'],e:'🐰',g:'比一比',b:['撇','横','横','撇','点','横','竖','横折','横','横','横','点'],x:'矢加豆，短短的'},
+{c:'高',p:'gāo',s:10,w:['高兴','高山','高低'],e:'🏔️',g:'比一比',b:['点','横','竖','横折','横','竖','横折钩','竖','横折','横'],x:'像高高的亭台'},
+{c:'低',p:'dī',s:7,w:['低头','高低','低声'],e:'⬇️',g:'比一比',b:['撇','竖','撇','竖提','横','斜钩','点'],x:'单人旁，低头的样子'},
+{c:'好',p:'hǎo',s:6,w:['好人','好事','正好'],e:'👍',g:'比一比',b:['撇点','撇','横','横撇','竖钩','横'],x:'女子相伴，真好'},
+{c:'坏',p:'huài',s:7,w:['好坏','坏人','坏蛋'],e:'👎',g:'比一比',b:['横','竖','提','横','撇','竖','点'],x:'土里藏个不，不好'},
+{c:'快',p:'kuài',s:7,w:['快乐','飞快','快车'],e:'⚡',g:'比一比',b:['点','点','竖','横折','横','撇','捺'],x:'竖心旁，心里飞快'},
+{c:'慢',p:'màn',s:14,w:['慢慢','快慢','慢跑'],e:'🐢',g:'比一比',b:['点','点','竖','竖','横折','横','横','竖','横折','竖','竖','横','横撇','捺'],x:'竖心旁，慢慢走'},
+{c:'冷',p:'lěng',s:7,w:['寒冷','冷水','冷热'],e:'🥶',g:'比一比',b:['点','提','撇','捺','点','横撇','点'],x:'两点水，冷冷冰冰'},
+{c:'热',p:'rè',s:10,w:['热水','热天','发热'],e:'🥵',g:'比一比',b:['横','竖钩','提','撇','横折弯钩','点','点','点','点','点'],x:'执手加四点火，热乎乎'},
+{c:'新',p:'xīn',s:13,w:['新年','新鲜','新旧'],e:'✨',g:'比一比',b:['点','横','点','撇','横','横','竖','撇','捺','撇','撇','横','竖'],x:'亲加斤，焕然一新'},
+{c:'旧',p:'jiù',s:5,w:['新旧','旧书','破旧'],e:'🕰️',g:'比一比',b:['竖','竖','横折','横','横'],x:'一竖加日，旧旧的'},
+{c:'对',p:'duì',s:5,w:['不对','对了','面对'],e:'✅',g:'比一比',b:['横撇','点','横','竖钩','点'],x:'又加寸，对对错错'},
+{c:'错',p:'cuò',s:13,w:['错误','认错','不错'],e:'❌',g:'比一比',b:['撇','横','横','横','竖提','横','竖','竖','横','竖','横折','横','横'],x:'金字旁，出错啦'},
+/* 颜色 */
+{c:'红',p:'hóng',s:6,w:['红色','红花','口红'],e:'🔴',g:'颜色',b:['撇折','撇折','提','横','竖','横'],x:'绞丝旁加工，红红的'},
+{c:'黄',p:'huáng',s:11,w:['黄色','黄瓜','金黄'],e:'🟡',g:'颜色',b:['横','竖','竖','横','竖','竖','横','竖','横折','撇','点'],x:'草头下共，金黄色'},
+{c:'蓝',p:'lán',s:13,w:['蓝色','蓝天','蓝莓'],e:'🔵',g:'颜色',b:['横','竖','竖','竖','竖','撇','横','点','竖','横折','竖','竖','横'],x:'草头下监，蓝蓝的天'},
+{c:'绿',p:'lǜ',s:11,w:['绿色','绿叶','绿灯'],e:'🟢',g:'颜色',b:['撇折','撇折','提','横折','横','横','点','横钩','撇折','撇','捺'],x:'绞丝旁加录，绿绿的叶'},
+{c:'白',p:'bái',s:5,w:['白色','白天','白云'],e:'⚪',g:'颜色',b:['撇','竖','横折','横','横'],x:'一撇加日，白白的云'},
+{c:'黑',p:'hēi',s:12,w:['黑色','黑夜','黑板'],e:'⚫',g:'颜色',b:['竖','横折','点','撇','横','竖','横','横','点','点','点','点'],x:'里字加四点，黑黑的夜'},
+{c:'青',p:'qīng',s:8,w:['青色','青草','青蛙'],e:'🟦',g:'颜色',b:['横','横','竖','横','竖','横折钩','横','横'],x:'上下结构，青草的颜色'},
+{c:'紫',p:'zǐ',s:12,w:['紫色','紫花','紫葡萄'],e:'🟣',g:'颜色',b:['竖','横','竖','提','撇','竖弯钩','撇折','撇折','点','竖钩','撇','点'],x:'此加糸，紫色的葡萄'},
+/* 自然 */
+{c:'天',p:'tiān',s:4,w:['天空','天上','今天'],e:'🌤️',g:'自然',b:['横','横','撇','捺'],x:'一横一横加人，天空在上面'},
+{c:'地',p:'dì',s:6,w:['大地','地上','土地'],e:'🌍',g:'自然',b:['横','竖','提','横折钩','竖','竖弯钩'],x:'土字旁加也，大地'},
+{c:'日',p:'rì',s:4,w:['日子','生日','红日'],e:'☀️',g:'自然',b:['竖','横折','横','横'],x:'方框里一横，太阳圆圆的'},
+{c:'月',p:'yuè',s:4,w:['月亮','月光','月饼'],e:'🌙',g:'自然',b:['撇','横折钩','横','横'],x:'弯弯的月亮'},
+{c:'星',p:'xīng',s:9,w:['星星','星光','明星'],e:'⭐',g:'自然',b:['竖','横折','横','横','撇','横','横','竖','横'],x:'日字生，天上星星'},
+{c:'云',p:'yún',s:4,w:['白云','云朵','乌云'],e:'☁️',g:'自然',b:['横','横','撇折','点'],x:'横横撇折点，云朵飘'},
+{c:'雨',p:'yǔ',s:8,w:['下雨','雨水','雨伞'],e:'🌧️',g:'自然',b:['横','竖','横折钩','竖','点','点','点','点'],x:'雨字头点点，下雨啦'},
+{c:'雪',p:'xuě',s:11,w:['下雪','雪花','雪人'],e:'❄️',g:'自然',b:['横','点','横钩','竖','点','点','点','点','横折','横','横'],x:'雨字头加彐，雪花飘飘'},
+{c:'风',p:'fēng',s:4,w:['大风','风车','风雨'],e:'🌬️',g:'自然',b:['撇','横折弯钩','撇','点'],x:'像风车转起来'},
+{c:'雷',p:'léi',s:13,w:['打雷','雷雨','雷声'],e:'🌩️',g:'自然',b:['横','点','横钩','竖','点','点','点','点','竖','横折','横','竖','横'],x:'雨字头下田，打雷啦'},
+{c:'电',p:'diàn',s:5,w:['闪电','电视','电灯'],e:'⚡',g:'自然',b:['竖','横折','横','横','竖弯钩'],x:'田字加竖弯钩，闪电'},
+{c:'水',p:'shuǐ',s:4,w:['喝水','水果','口水'],e:'💧',g:'自然',b:['竖钩','横撇','撇','捺'],x:'像流动的水波'},
+{c:'火',p:'huǒ',s:4,w:['火车','大火','火柴'],e:'🔥',g:'自然',b:['点','撇','撇','捺'],x:'像燃烧的火苗'},
+{c:'山',p:'shān',s:3,w:['高山','上山','大山'],e:'⛰️',g:'自然',b:['竖','竖折','竖'],x:'三座山峰连一起'},
+{c:'石',p:'shí',s:5,w:['石头','宝石','石子'],e:'🪨',g:'自然',b:['横','撇','竖','横折','横'],x:'山脚下的石头'},
+{c:'土',p:'tǔ',s:3,w:['泥土','土地','土豆'],e:'🟫',g:'自然',b:['横','竖','横'],x:'一横一竖一横，土地'},
+{c:'金',p:'jīn',s:8,w:['金色','金子','金黄'],e:'🪙',g:'自然',b:['撇','捺','横','横','竖','点','撇','横'],x:'像金字招牌闪闪亮'},
+{c:'木',p:'mù',s:4,w:['木头','树木','木马'],e:'🪵',g:'自然',b:['横','竖','撇','捺'],x:'像一棵大树'},
+{c:'田',p:'tián',s:5,w:['田地','稻田','田野'],e:'🌾',g:'自然',b:['竖','横折','横','竖','横'],x:'四四方方一块田'},
+{c:'海',p:'hǎi',s:10,w:['大海','海水','海边'],e:'🌊',g:'自然',b:['点','点','提','撇','横','竖折','横折钩','点','横','竖折折钩'],x:'三点水加每，大海'},
+/* 身体 */
+{c:'人',p:'rén',s:2,w:['大人','人们','好人'],e:'🧑',g:'身体',b:['撇','捺'],x:'一撇一捺，站立的一个人'},
+{c:'口',p:'kǒu',s:3,w:['口水','门口','人口'],e:'👄',g:'身体',b:['竖','横折','横'],x:'方方的嘴巴'},
+{c:'手',p:'shǒu',s:4,w:['小手','手机','左手'],e:'✋',g:'身体',b:['撇','横','横','竖钩'],x:'像张开的手掌'},
+{c:'足',p:'zú',s:7,w:['足球','手足','足迹'],e:'🦶',g:'身体',b:['竖','横折','横','竖','横','撇','捺'],x:'像一只小脚丫'},
+{c:'目',p:'mù',s:5,w:['目光','题目','耳目'],e:'👁️',g:'身体',b:['竖','横折','横','横','横'],x:'横着的眼睛'},
+{c:'耳',p:'ěr',s:6,w:['耳朵','耳机','木耳'],e:'🦻',g:'身体',b:['横','竖','竖','横','横','横'],x:'像一只耳朵'},
+{c:'鼻',p:'bí',s:14,w:['鼻子','鼻孔','鼻尖'],e:'👃',g:'身体',b:['撇','竖','横折','横','横','竖','横折','横','横','撇','竖','横折钩','竖','横'],x:'自字加畀，鼻子'},
+{c:'牙',p:'yá',s:4,w:['牙齿','牙刷','门牙'],e:'🦷',g:'身体',b:['横','撇折','竖钩','撇'],x:'像露出的牙齿'},
+{c:'舌',p:'shé',s:6,w:['舌头','舌尖','口舌'],e:'👅',g:'身体',b:['撇','横','竖','竖','横折','横'],x:'古字下加一横，舌头'},
+{c:'头',p:'tóu',s:5,w:['头发','抬头','头顶'],e:'🙂',g:'身体',b:['点','点','横','撇','点'],x:'大上加两点，脑袋'},
+{c:'心',p:'xīn',s:4,w:['开心','小心','中心'],e:'❤️',g:'身体',b:['点','卧钩','点','点'],x:'像一颗爱心'},
+/* 动物 */
+{c:'牛',p:'niú',s:4,w:['小牛','牛奶','牛肉'],e:'🐮',g:'动物',b:['撇','横','横','竖'],x:'像牛头长角'},
+{c:'羊',p:'yáng',s:6,w:['小羊','山羊','羊毛'],e:'🐑',g:'动物',b:['点','撇','横','横','横','竖'],x:'像羊角弯弯'},
+{c:'马',p:'mǎ',s:3,w:['小马','马车','骑马'],e:'🐴',g:'动物',b:['横折','竖折折钩','横'],x:'像奔跑的马'},
+{c:'猪',p:'zhū',s:11,w:['小猪','猪肉','野猪'],e:'🐷',g:'动物',b:['撇','弯钩','撇','横','竖','横','撇','竖','横折','横','横'],x:'反犬旁加者，小猪'},
+{c:'鸡',p:'jī',s:7,w:['小鸡','公鸡','母鸡'],e:'🐔',g:'动物',b:['横撇','点','撇','横折钩','点','竖折折钩','横'],x:'又加鸟，小鸡叽叽'},
+{c:'鸭',p:'yā',s:10,w:['小鸭','鸭子','烤鸭'],e:'🦆',g:'动物',b:['竖','横折','横','横','竖','撇','横折钩','点','竖折折钩','横'],x:'甲加鸟，小鸭嘎嘎'},
+{c:'猫',p:'māo',s:11,w:['小猫','花猫','熊猫'],e:'🐱',g:'动物',b:['撇','弯钩','撇','横','竖','竖','竖','横折','横','竖','横'],x:'反犬旁加苗，小猫喵喵'},
+{c:'狗',p:'gǒu',s:8,w:['小狗','花狗','狗熊'],e:'🐶',g:'动物',b:['撇','弯钩','撇','撇','横折钩','竖','横折','横'],x:'反犬旁加句，小狗汪汪'},
+{c:'兔',p:'tù',s:8,w:['小兔','兔子','白兔'],e:'🐰',g:'动物',b:['撇','横撇','竖','横折','横','撇','竖弯钩','点'],x:'像一只长耳朵兔子'},
+{c:'鸟',p:'niǎo',s:5,w:['小鸟','鸟儿','飞鸟'],e:'🐦',g:'动物',b:['撇','横折钩','点','竖折折钩','横'],x:'像一只小鸟'},
+{c:'鱼',p:'yú',s:8,w:['小鱼','金鱼','钓鱼'],e:'🐟',g:'动物',b:['撇','横撇','竖','横折','横','竖','横','横'],x:'像一条鱼'},
+{c:'虫',p:'chóng',s:6,w:['虫子','小虫','毛毛虫'],e:'🐛',g:'动物',b:['竖','横折','横','竖','提','点'],x:'像一条小虫'},
+{c:'龙',p:'lóng',s:5,w:['小龙','龙舟','恐龙'],e:'🐲',g:'动物',b:['横','撇','竖弯钩','撇','点'],x:'像一条飞龙'},
+{c:'虎',p:'hǔ',s:8,w:['老虎','虎牙','白虎'],e:'🐯',g:'动物',b:['竖','横','横钩','撇','横','竖弯钩','撇','横折弯钩'],x:'像一只大老虎'},
+{c:'象',p:'xiàng',s:11,w:['大象','象牙','想象'],e:'🐘',g:'动物',b:['撇','横撇','竖','横折','横','撇','弯钩','撇','撇','撇','捺'],x:'像大象的长鼻子'},
+{c:'猴',p:'hóu',s:12,w:['猴子','小猴','猴王'],e:'🐵',g:'动物',b:['撇','弯钩','撇','撇','竖','横折','横','横','撇折','点','撇','捺'],x:'反犬旁加侯，猴子'},
+{c:'熊',p:'xióng',s:14,w:['小熊','熊猫','狗熊'],e:'🐻',g:'动物',b:['撇折','点','撇','横折钩','横','横','撇折','点','撇折','点','点','点','点','点'],x:'能字加四点，大熊'},
+{c:'鼠',p:'shǔ',s:13,w:['老鼠','小老鼠','松鼠'],e:'🐭',g:'动物',b:['撇','竖','横','横折','横','横','竖提','点','点','竖提','点','点','斜钩'],x:'像老鼠的小牙齿'},
+{c:'龟',p:'guī',s:7,w:['乌龟','海龟','龟兔赛跑'],e:'🐢',g:'动物',b:['撇','横折','横','竖弯钩','竖','横折','横'],x:'像乌龟的壳'},
+{c:'蛙',p:'wā',s:12,w:['青蛙','牛蛙','蛙泳'],e:'🐸',g:'动物',b:['竖','横折','横','竖','横','横','竖','横','横','竖','横','横'],x:'虫字旁加圭，小青蛙'},
+/* 植物 */
+{c:'花',p:'huā',s:7,w:['花朵','开花','花园'],e:'🌸',g:'植物',b:['横','竖','竖','撇','竖','撇','竖弯钩'],x:'草字头下化，花朵'},
+{c:'草',p:'cǎo',s:9,w:['小草','青草','草地'],e:'🌿',g:'植物',b:['横','竖','竖','竖','横折','横','横','横','竖'],x:'草字头下早，小草'},
+{c:'树',p:'shù',s:9,w:['大树','树木','树叶'],e:'🌳',g:'植物',b:['横','竖','撇','点','横撇','点','横','竖钩','点'],x:'木字旁加对，大树'},
+{c:'竹',p:'zhú',s:6,w:['竹子','竹叶','竹林'],e:'🎋',g:'植物',b:['撇','横','竖','撇','横','竖钩'],x:'两个竹节，竹子'},
+{c:'果',p:'guǒ',s:8,w:['水果','苹果','果树'],e:'🍎',g:'植物',b:['竖','横折','横','横','横','竖','撇','捺'],x:'田字在木上，果子'},
+{c:'瓜',p:'guā',s:5,w:['西瓜','冬瓜','南瓜'],e:'🍉',g:'植物',b:['撇','撇','竖提','点','捺'],x:'像瓜藤挂着瓜'},
+{c:'桃',p:'táo',s:10,w:['桃子','桃花','桃树'],e:'🍑',g:'植物',b:['横','竖','撇','点','撇','点','提','竖弯钩','撇','点'],x:'木字旁加兆，桃子'},
+{c:'梨',p:'lí',s:11,w:['梨子','梨花','鸭梨'],e:'🍐',g:'植物',b:['撇','横','竖','撇','点','竖','竖钩','横','竖','撇','捺'],x:'利字加木，梨子'},
+{c:'苹',p:'píng',s:8,w:['苹果'],e:'🍏',g:'植物',b:['横','竖','竖','横','点','撇','横','竖'],x:'草字头下平，苹果'},
+{c:'菜',p:'cài',s:11,w:['白菜','青菜','蔬菜'],e:'🥬',g:'植物',b:['横','竖','竖','撇','点','点','撇','横','竖','撇','捺'],x:'草字头下采，蔬菜'},
+{c:'苗',p:'miáo',s:8,w:['树苗','禾苗','苗条'],e:'🌱',g:'植物',b:['横','竖','竖','竖','横折','横','竖','横'],x:'草字头下田，小苗'},
+{c:'叶',p:'yè',s:5,w:['树叶','叶子','叶片'],e:'🍃',g:'植物',b:['竖','横折','横','横','竖'],x:'口字旁加十，树叶'},
+/* 食物 */
+{c:'米',p:'mǐ',s:6,w:['大米','米饭','小米'],e:'🌾',g:'食物',b:['点','撇','横','竖','撇','捺'],x:'像一粒粒白米'},
+{c:'饭',p:'fàn',s:7,w:['米饭','吃饭','午饭'],e:'🍚',g:'食物',b:['撇','横撇','竖提','撇','横撇','竖','捺'],x:'食字旁加反，米饭'},
+{c:'面',p:'miàn',s:9,w:['面条','面包','面粉'],e:'🍜',g:'食物',b:['横','撇','竖','横折','竖','竖','横','横','横'],x:'一横下面，香香的面条'},
+{c:'汤',p:'tāng',s:6,w:['喝汤','汤圆','菜汤'],e:'🥣',g:'食物',b:['点','点','提','横折折折钩','撇','撇'],x:'三点水，汤水热乎乎'},
+{c:'肉',p:'ròu',s:6,w:['猪肉','牛肉','肉丸'],e:'🥩',g:'食物',b:['竖','横折钩','撇','点','撇','点'],x:'像一块肉'},
+{c:'蛋',p:'dàn',s:11,w:['鸡蛋','蛋糕','蛋白'],e:'🥚',g:'食物',b:['横撇','竖','横','横','竖','竖','横折','横','竖','提','点'],x:'疋字头下虫，鸡蛋'},
+{c:'糖',p:'táng',s:16,w:['糖果','白糖','糖葫芦'],e:'🍬',g:'食物',b:['点','撇','横','竖','撇','点','点','横','撇','横折','横','横','竖','横折','横','横'],x:'米字旁加唐，甜甜的'},
+{c:'茶',p:'chá',s:9,w:['喝茶','茶叶','奶茶'],e:'🍵',g:'食物',b:['横','竖','竖','撇','捺','横','竖钩','撇','点'],x:'草字头下加木，喝茶'},
+{c:'饼',p:'bǐng',s:9,w:['饼干','月饼','大饼'],e:'🥮',g:'食物',b:['撇','横撇','竖提','点','撇','横','横','撇','竖'],x:'食字旁加并，饼干'},
+{c:'粥',p:'zhōu',s:12,w:['喝粥','米粥','白粥'],e:'🫕',g:'食物',b:['横折','横','竖折折钩','点','撇','横','竖','撇','点','横折','横','竖折折钩'],x:'弓米弓，香香的粥'},
+{c:'油',p:'yóu',s:8,w:['加油','油条','酱油'],e:'🍳',g:'食物',b:['点','点','提','横','竖','横折钩','横','横'],x:'三点水加由，油亮亮'},
+{c:'豆',p:'dòu',s:7,w:['豆浆','豆子','土豆'],e:'🫘',g:'食物',b:['横','竖','横折','横','点','撇','横'],x:'像一颗小豆子'},
+/* 家人 */
+{c:'爸',p:'bà',s:8,w:['爸爸','老爸','爸妈'],e:'👨',g:'家人',b:['撇','点','撇','捺','横折','竖','横','竖弯钩'],x:'父字头下巴，爸爸'},
+{c:'妈',p:'mā',s:6,w:['妈妈','老妈','爸妈'],e:'👩',g:'家人',b:['撇点','撇','横','横折','竖折折钩','横'],x:'女字旁加马，妈妈'},
+{c:'爷',p:'yé',s:6,w:['爷爷','大爷','老爷'],e:'👴',g:'家人',b:['撇','点','撇','捺','横折钩','竖'],x:'父字头下卩，爷爷'},
+{c:'奶',p:'nǎi',s:5,w:['奶奶','牛奶','奶粉'],e:'👵',g:'家人',b:['撇点','撇','横','横折折折钩','撇'],x:'女字旁加乃，奶奶'},
+{c:'哥',p:'gē',s:10,w:['哥哥','大哥','表哥'],e:'👦',g:'家人',b:['横','竖','横折','横','竖钩','横','竖','横折','横','竖钩'],x:'两个可叠起来，哥哥'},
+{c:'姐',p:'jiě',s:8,w:['姐姐','大姐','表姐'],e:'👱‍♀️',g:'家人',b:['撇点','撇','横','竖','横折','横','横','横'],x:'女字旁加且，姐姐'},
+{c:'弟',p:'dì',s:7,w:['弟弟','小弟','兄弟'],e:'🧒',g:'家人',b:['点','撇','横折','横','竖折折钩','竖','撇'],x:'像小弟弟站得直'},
+{c:'妹',p:'mèi',s:8,w:['妹妹','小妹','姐妹'],e:'👧',g:'家人',b:['撇点','撇','横','横','横','竖','撇','捺'],x:'女字旁加未，妹妹'},
+{c:'我',p:'wǒ',s:7,w:['我们','我的','自我'],e:'🙋',g:'家人',b:['撇','横','竖钩','提','斜钩','撇','点'],x:'像握着戈的我'},
+{c:'你',p:'nǐ',s:7,w:['你们','你好','你的'],e:'👉',g:'家人',b:['撇','竖','撇','横撇','竖钩','点','点'],x:'单人旁加尔，你'},
+{c:'他',p:'tā',s:5,w:['他们','他的','其他'],e:'🧑',g:'家人',b:['撇','竖','横折钩','竖','竖弯钩'],x:'单人旁加也，他'},
+{c:'她',p:'tā',s:6,w:['她们','她的'],e:'👩',g:'家人',b:['撇点','撇','横','横折钩','竖','竖弯钩'],x:'女字旁加也，她'},
+{c:'们',p:'men',s:5,w:['我们','你们','他们'],e:'👥',g:'家人',b:['撇','竖','点','竖','横折钩'],x:'单人旁加门，我们'},
+{c:'叔',p:'shū',s:8,w:['叔叔','大叔','叔父'],e:'🧔',g:'家人',b:['竖','横','横','竖钩','点','点','横撇','捺'],x:'上小又，叔叔'},
+{c:'姨',p:'yí',s:9,w:['阿姨','姨妈','小姨'],e:'👩‍🦰',g:'家人',b:['撇点','撇','横','横','横折','横','竖折折钩','撇','捺'],x:'女字旁加夷，阿姨'},
+{c:'姑',p:'gū',s:8,w:['姑姑','姑妈','姑娘'],e:'👩‍🦱',g:'家人',b:['撇点','撇','横','横','竖','竖','横折','横'],x:'女字旁加古，姑姑'},
+{c:'舅',p:'jiù',s:13,w:['舅舅','舅妈','小舅'],e:'🧑‍🦱',g:'家人',b:['撇','竖','横折','横','横','横','竖','横折','横','竖','横','横折钩','撇'],x:'臼字头下男，舅舅'},
+{c:'家',p:'jiā',s:10,w:['家人','回家','大家'],e:'🏠',g:'家人',b:['点','点','横钩','横','撇','弯钩','撇','撇','撇','捺'],x:'宝盖头下豕，温馨的家'},
+{c:'儿',p:'ér',s:2,w:['儿子','女儿','儿子'],e:'👶',g:'家人',b:['撇','竖弯钩'],x:'像一个小娃娃'},
+{c:'女',p:'nǚ',s:3,w:['女儿','女孩','女生'],e:'👧',g:'家人',b:['撇点','撇','横'],x:'像坐着的女孩'},
+/* 动作 */
+{c:'走',p:'zǒu',s:7,w:['走路','行走','走开'],e:'🚶',g:'动作',b:['横','竖','横','竖','横','撇','捺'],x:'像人在大步走'},
+{c:'跑',p:'pǎo',s:12,w:['跑步','赛跑','奔跑'],e:'🏃',g:'动作',b:['竖','横折','横','竖','横','撇','提','撇','横折钩','横折','横','竖弯钩'],x:'足字旁加包，跑步'},
+{c:'跳',p:'tiào',s:13,w:['跳舞','跳高','跳绳'],e:'🤸',g:'动作',b:['竖','横折','横','竖','横','撇','提','撇','点','提','竖弯钩','撇','点'],x:'足字旁加兆，跳起来'},
+{c:'爬',p:'pá',s:8,w:['爬山','爬树','爬行'],e:'🧗',g:'动作',b:['撇','撇','竖','捺','横折','竖','横','竖弯钩'],x:'爪字旁加巴，爬呀爬'},
+{c:'看',p:'kàn',s:9,w:['看书','看见','好看'],e:'👀',g:'动作',b:['撇','横','横','撇','竖','横折','横','横','横'],x:'手在上目在下，看'},
+{c:'听',p:'tīng',s:7,w:['听话','听见','听力'],e:'👂',g:'动作',b:['竖','横折','横','撇','撇','横','竖'],x:'口字旁加斤，听声音'},
+{c:'说',p:'shuō',s:9,w:['说话','听说','说明'],e:'🗣️',g:'动作',b:['点','横折提','点','撇','竖','横折','横','撇','竖弯钩'],x:'言字旁加兑，说话'},
+{c:'读',p:'dú',s:10,w:['读书','朗读','阅读'],e:'📚',g:'动作',b:['点','横折提','横','竖','横折','横','横','点','撇','横'],x:'言字旁加卖，读书'},
+{c:'写',p:'xiě',s:5,w:['写字','书写','写作业'],e:'✍️',g:'动作',b:['点','横钩','横','竖折折钩','横'],x:'像写字的笔'},
+{c:'唱',p:'chàng',s:11,w:['唱歌','合唱','演唱'],e:'🎤',g:'动作',b:['竖','横折','横','竖','横折','横','横','竖','横折','横','横'],x:'口字旁加昌，唱歌'},
+{c:'画',p:'huà',s:8,w:['画画','画家','笔画'],e:'🎨',g:'动作',b:['横','竖','横折','横','竖','横','竖折','横'],x:'一田一竖，画画'},
+{c:'吃',p:'chī',s:6,w:['吃饭','好吃','小吃'],e:'😋',g:'动作',b:['竖','横折','横','撇','横','横折弯钩'],x:'口字旁加乞，吃饭'},
+{c:'喝',p:'hē',s:12,w:['喝水','喝汤','喝茶'],e:'🧃',g:'动作',b:['竖','横折','横','竖','横折','横','横','撇','横折钩','点','竖','横折钩'],x:'口字旁加曷，喝水'},
+{c:'玩',p:'wán',s:8,w:['玩耍','好玩','玩具'],e:'🎮',g:'动作',b:['横','横','竖','提','横','横','撇','竖弯钩'],x:'王字旁加元，玩耍'},
+{c:'乐',p:'lè',s:5,w:['快乐','音乐','欢乐'],e:'😄',g:'动作',b:['撇','竖折','竖钩','撇','点'],x:'像音乐符号，快乐'},
+{c:'睡',p:'shuì',s:13,w:['睡觉','睡着','午睡'],e:'😴',g:'动作',b:['竖','横折','横','横','横','撇','横','竖','横','竖','横','横','横'],x:'目字旁加垂，睡觉'},
+{c:'飞',p:'fēi',s:3,w:['飞机','飞翔','起飞'],e:'🕊️',g:'动作',b:['横折弯钩','撇','点'],x:'像小鸟张开翅膀飞'},
+{c:'游',p:'yóu',s:12,w:['游泳','游戏','旅游'],e:'🏊',g:'动作',b:['点','点','提','点','横','横折钩','撇','撇','横','横撇','竖钩','横'],x:'三点水，在水里游'},
+{c:'来',p:'lái',s:7,w:['过来','来了','回来'],e:'👋',g:'动作',b:['横','点','撇','横','竖','撇','捺'],x:'像麦子到来'},
+{c:'去',p:'qù',s:5,w:['出去','回去','来去'],e:'👣',g:'动作',b:['横','竖','横','撇折','点'],x:'上面土下面厶，离去'},
+{c:'开',p:'kāi',s:4,w:['开门','开心','打开'],e:'🔓',g:'动作',b:['横','横','撇','竖'],x:'一横一横，打开'},
+{c:'关',p:'guān',s:6,w:['关门','关心','开关'],e:'🔒',g:'动作',b:['点','撇','横','横','撇','捺'],x:'两点加天，关上门'},
+{c:'坐',p:'zuò',s:7,w:['坐下','请坐','坐车'],e:'🪑',g:'动作',b:['撇','点','撇','点','横','竖','横'],x:'两个人坐在地上'},
+{c:'站',p:'zhàn',s:10,w:['站立','车站','站队'],e:'🧍',g:'动作',b:['点','横','点','撇','横','竖','横折','横','竖','横'],x:'立字旁加占，站直'},
+{c:'拿',p:'ná',s:10,w:['拿起','拿来','拿着'],e:'🤲',g:'动作',b:['撇','捺','横','竖','横折','横','撇','横','横','竖钩'],x:'合手拿东西'},
+{c:'放',p:'fàng',s:8,w:['放下','放学','放心'],e:'🪁',g:'动作',b:['点','横','横折钩','撇','撇','横','撇','捺'],x:'方字旁加攵，放风筝'},
+{c:'洗',p:'xǐ',s:9,w:['洗手','洗衣服','洗脸'],e:'🧼',g:'动作',b:['点','点','提','撇','横','竖','横','撇','竖弯钩'],x:'三点水加先，洗手'},
+{c:'扫',p:'sǎo',s:6,w:['扫地','打扫','扫把'],e:'🧹',g:'动作',b:['横','竖钩','提','横折','横','横'],x:'提手旁加彐，扫地'},
+{c:'学',p:'xué',s:8,w:['学习','上学','学生'],e:'📖',g:'动作',b:['点','点','撇','点','横钩','横撇','竖钩','横'],x:'像孩子认真学知识'},
+{c:'做',p:'zuò',s:11,w:['做事','做工','做饭'],e:'🛠️',g:'动作',b:['撇','竖','横','竖','竖','横折','横','撇','横','撇','捺'],x:'单人旁，动手做事情'},
+/* 物品 */
+{c:'书',p:'shū',s:4,w:['书本','看书','读书'],e:'📗',g:'物品',b:['横折','横折钩','点','横'],x:'像一本打开的书'},
+{c:'包',p:'bāo',s:5,w:['书包','面包','包子'],e:'🎒',g:'物品',b:['撇','横折钩','横折','横','竖弯钩'],x:'像一个小书包'},
+{c:'桌',p:'zhuō',s:10,w:['桌子','书桌','餐桌'],e:'🍽️',g:'物品',b:['竖','横','竖','横折','横','横','横','竖','撇','捺'],x:'上卜下木，桌子'},
+{c:'椅',p:'yǐ',s:12,w:['椅子','桌椅','轮椅'],e:'💺',g:'物品',b:['横','竖','撇','点','横','撇','捺','横','竖','横折','横','竖钩'],x:'木字旁加奇，椅子'},
+{c:'床',p:'chuáng',s:7,w:['床上','起床','床单'],e:'🛏️',g:'物品',b:['点','横','撇','横','竖','撇','捺'],x:'广字头下木，床'},
+{c:'灯',p:'dēng',s:6,w:['电灯','台灯','灯光'],e:'💡',g:'物品',b:['点','撇','撇','点','横','竖钩'],x:'火字旁加丁，电灯'},
+{c:'门',p:'mén',s:3,w:['门口','开门','关门'],e:'🚪',g:'物品',b:['点','竖','横折钩'],x:'像一扇门'},
+{c:'户',p:'hù',s:4,w:['户口','窗户','住户'],e:'🖼️',g:'物品',b:['点','横折','横','撇'],x:'像一扇单扇门'},
+{c:'窗',p:'chuāng',s:12,w:['窗户','车窗','天窗'],e:'🪟',g:'物品',b:['点','点','横钩','撇','点','撇','横折','点','撇','横折','点','横'],x:'穴字头下囱，窗户'},
+{c:'鞋',p:'xié',s:15,w:['鞋子','皮鞋','拖鞋'],e:'👟',g:'物品',b:['横','竖','竖','横','竖','横折','横','横','竖','横','竖','横','横','竖','横'],x:'革字旁加圭，鞋子'},
+{c:'帽',p:'mào',s:12,w:['帽子','草帽','礼帽'],e:'🧢',g:'物品',b:['竖','横折钩','竖','竖','横折','横','横','竖','横折','横','横','横'],x:'巾字旁加冒，帽子'},
+{c:'衣',p:'yī',s:6,w:['衣服','上衣','毛衣'],e:'👕',g:'物品',b:['点','横','撇','竖提','撇','捺'],x:'像一件衣服'},
+{c:'裤',p:'kù',s:12,w:['裤子','短裤','长裤'],e:'👖',g:'物品',b:['点','横撇','竖','撇','点','点','横','撇','横','撇折','横','竖'],x:'衣字旁加库，裤子'},
+{c:'球',p:'qiú',s:11,w:['皮球','足球','篮球'],e:'⚽',g:'物品',b:['横','横','竖','提','横','竖钩','提','点','撇','点','捺'],x:'王字旁加求，皮球'},
+{c:'车',p:'chē',s:4,w:['汽车','火车','自行车'],e:'🚗',g:'物品',b:['横','撇折','横','竖'],x:'像一辆小汽车'},
+{c:'船',p:'chuán',s:11,w:['小船','轮船','飞船'],e:'🚢',g:'物品',b:['撇','撇','横折钩','点','横','点','撇','横折弯钩','竖','横折','横'],x:'舟字旁，小船'},
+{c:'杯',p:'bēi',s:8,w:['杯子','水杯','茶杯'],e:'🥤',g:'物品',b:['横','竖','撇','点','横','撇','竖','点'],x:'木字旁加不，杯子'},
+{c:'碗',p:'wǎn',s:13,w:['饭碗','碗筷','大碗'],e:'🥢',g:'物品',b:['横','撇','竖','横折','横','点','点','横钩','撇','横折钩','横撇','竖','竖弯钩'],x:'石字旁加宛，饭碗'},
+/* 时间 */
+{c:'年',p:'nián',s:6,w:['新年','今年','过年'],e:'🎆',g:'时间',b:['撇','横','横','竖','横','竖'],x:'像丰收的年景'},
+{c:'今',p:'jīn',s:4,w:['今天','今年','今日'],e:'📅',g:'时间',b:['撇','捺','点','横撇'],x:'人字头，今天'},
+{c:'明',p:'míng',s:8,w:['明天','明亮','明年'],e:'🌅',g:'时间',b:['竖','横折','横','横','撇','横折钩','横','横'],x:'日月同辉，明亮'},
+{c:'时',p:'shí',s:7,w:['时间','小时','时候'],e:'⏰',g:'时间',b:['竖','横折','横','横','横','竖钩','点'],x:'日字旁加寸，时间'},
+{c:'分',p:'fēn',s:4,w:['分钟','分开','十分'],e:'⏱️',g:'时间',b:['撇','捺','横折钩','撇'],x:'八刀分开，分钟'},
+{c:'早',p:'zǎo',s:6,w:['早上','早晨','早饭'],e:'🌄',g:'时间',b:['竖','横折','横','横','横','竖'],x:'日字当头，早上'},
+{c:'午',p:'wǔ',s:4,w:['中午','午饭','下午'],e:'☀️',g:'时间',b:['撇','横','横','竖'],x:'像中午的大太阳'},
+{c:'晚',p:'wǎn',s:11,w:['晚上','晚饭','晚安'],e:'🌆',g:'时间',b:['竖','横折','横','横','撇','横撇','竖','横折','横','撇','竖弯钩'],x:'日字旁加免，晚上'},
+{c:'春',p:'chūn',s:9,w:['春天','春雨','春节'],e:'🌷',g:'时间',b:['横','横','横','撇','捺','竖','横折','横','横'],x:'三人看日，春天'},
+{c:'夏',p:'xià',s:10,w:['夏天','夏季','盛夏'],e:'🍉',g:'时间',b:['横','撇','竖','横折','横','横','横','撇','横撇','捺'],x:'像夏天的大太阳'},
+{c:'秋',p:'qiū',s:9,w:['秋天','秋风','秋季'],e:'🍂',g:'时间',b:['撇','横','竖','撇','点','点','撇','撇','捺'],x:'禾加火，秋天'},
+{c:'冬',p:'dōng',s:5,w:['冬天','冬季','冬眠'],e:'⛄',g:'时间',b:['撇','横撇','点','点','点'],x:'折文加两点，冬天'}
+];
+
+/* ==================== 状态管理 ==================== */
+const LS_LEARN = 'zishi_learned_v1';
+const LS_DAYS  = 'zishi_days_v1';
+let learned = new Set();
+let days = {};
+let curTab = 'home';
+let cardFilter = 'all';
+let cardCat = '全部';
+let searchKw = '';
+let strokeIdx = 0;
+let strokeStep = 0;
+let penColor = '#FF6B6B';
+const PEN_COLORS = ['#FF6B6B','#FF9F1C','#FFD93D','#4CAF6E','#4D96FF','#9B59B6'];
+
+/* 笔画名 → 真实笔形 SVG 路径（24×24 坐标，stroke 为 currentColor） */
+const STROKE_PATH = {
+  '横':   'M3.2 16.4 Q12 15.1 20.8 15.1',
+  '竖':   'M12.2 3.2 L11.8 20.8',
+  '撇':   'M12.8 3.2 C13.8 8.4 12.4 13.4 9.2 16.8 C7.8 18.1 6.3 19.2 4.6 20',
+  '捺':   'M4.6 8.6 C7.4 8.4 10 10.2 12.4 12.8 C14.2 15 16 17.6 16.9 19.8',
+  '点':   'M8.8 4.6 C10.4 7.6 12.6 10.4 15.6 13.2 C16.8 14.2 18 14.9 19.6 15.4',
+  '提':   'M3.6 18.6 C9.6 15.4 15.2 11.8 20.4 7.4',
+  '斜钩': 'M8.8 3.2 C7.4 9.6 8.8 14.8 12.6 17.6 C14.9 19.3 17.6 19.4 19.7 18.5 C20.2 18.2 20.5 17.8 20.7 17.3 L19.3 15.4',
+  '卧钩': 'M5.2 7.2 C7.2 13.4 12.4 17.2 18 16.3 C19.6 16.1 20.4 15.3 20.5 14.2 L18.7 13.4',
+  '弯钩': 'M11.8 3.2 C13.8 8.4 13 13.6 10.1 16.6 C8.6 18.1 6.9 19 5.2 19.2 L4.2 17.5',
+  '横折': 'M3.4 10.2 L15.4 9.4 L14.9 20.2',
+  '横撇': 'M3.4 9.6 L15.4 9 L8.6 19.4',
+  '横钩': 'M3.4 10.2 L15.4 9.6 M15.4 9.6 C15.2 10.8 14.9 11.8 14.4 12.9',
+  '横折钩': 'M3.6 9.4 L15.2 8.8 L14.8 16.4 L13.4 15.6',
+  '横折提': 'M4 10.8 L12.8 10.2 L12.1 13.8 L17.2 8.2',
+  '横折弯钩': 'M3.8 8.4 L13.2 8.4 C15.2 8.4 15.3 10.6 15 12.6 C14.5 15.8 12.3 17.7 9.8 18.3 C8.4 18.6 7 18.4 5.9 17.7 L7.1 16.1',
+  '横折折折钩': 'M4.2 5.6 L14.2 5.6 L8.4 12.4 L16 12.4 L10.6 18.8 L12 17.7',
+  '竖折': 'M12.2 3.4 L11.9 16.6 L20.4 17.2',
+  '竖弯': 'M12.4 3.4 L12.1 10.2 C12 13 13.6 15 16.4 15.3 L20.2 15.3',
+  '竖弯钩': 'M12.4 3.2 L12.1 10.2 C12 13.6 13.9 15.8 17 16.1 C19.2 16.3 20.5 15.4 20.8 14 L19.7 12.7',
+  '竖折折钩': 'M11.9 3.2 L11.7 9.6 L19.4 10 L18.9 15.2 C18.6 17.4 17.2 18.7 15.4 19.3 L15 17.6',
+  '竖提': 'M11.9 3.4 L11.6 14.2 L17.2 9.4',
+  '竖钩': 'M12.1 3.2 L11.7 17.8 L10 16.2',
+  '撇折': 'M12.9 4.6 L7.2 14.4 L13.8 15.8',
+  '撇点': 'M12.8 3.6 C12.1 6.8 11.1 10 9.6 13 C8.8 14.3 7.8 15.4 6.6 16.2 C6.9 16.7 7.3 17.1 7.9 17.5'
+};
+function svgStroke(name,size){
+  const d = STROKE_PATH[name];
+  if(!d) return '';
+  return '<svg class="st-svg" viewBox="0 0 24 24" width="'+size+'" height="'+size+'" aria-hidden="true">'+
+    '<path d="'+d+'" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>'+
+  '</svg>';
+}
+
+/* ==================== 发音模块（音频包方案） ==================== */
+const AUDIO_DIR = { char:'audio/chars/', word:'audio/words/', slow:'audio/slow/' };
+const LS_AUDIO = 'zishi_audio_cfg_v1';
+let audioCfg = { slow:false, auto:false, tts:true };
+const audioEl = new Audio();
+const audioFail = new Set();
+let playingEl = null;
+
+function loadAudioCfg(){
+  try{ Object.assign(audioCfg, JSON.parse(localStorage.getItem(LS_AUDIO)||'{}')); }catch(e){}
+}
+function saveAudioCfg(){ localStorage.setItem(LS_AUDIO, JSON.stringify(audioCfg)); }
+
+function markPlaying(el,on){
+  if(!el || !el.classList) return;
+  if(on) el.classList.add('playing'); else el.classList.remove('playing');
+}
+
+/* 浏览器自带语音兜底（没放音频文件的字用） */
+function ttsSpeak(text, rate){
+  if(!('speechSynthesis' in window)) return false;
+  try{
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'zh-CN'; u.rate = rate || 0.95; u.pitch = 1.05;
+    const all = window.speechSynthesis.getVoices() || [];
+    const zh = all.filter(v=>/zh|Chinese/i.test(v.lang||'')||/中文|普通话/.test(v.name||''));
+    const pick = zh.find(v=>/zh[-_]CN/i.test(v.lang||'')) || zh[0];
+    if(pick) u.voice = pick;
+    window.speechSynthesis.speak(u);
+    return true;
+  }catch(e){ return false; }
+}
+
+function playFile(url, rate, onFail, el){
+  audioEl.pause();
+  audioEl.currentTime = 0;
+  audioEl.src = url;
+  audioEl.playbackRate = rate || 1;
+  audioEl.onended = ()=>markPlaying(el,false);
+  audioEl.onerror = ()=>{ markPlaying(el,false); if(onFail) onFail(); };
+  const p = audioEl.play();
+  if(p && p.catch) p.catch(()=>{ markPlaying(el,false); if(onFail) onFail(); });
+}
+
+/* 统一播放入口：文本 + 类型(char/word) + 触发按钮 */
+function playAudio(text, type, el){
+  if(!text) return;
+  type = type || 'char';
+  if(playingEl && playingEl !== el) markPlaying(playingEl,false);
+  playingEl = el;
+  markPlaying(el,true);
+
+  const file = encodeURIComponent(text) + '.mp3';
+  const slowRate = (type === 'char') ? 0.7 : 0.8;
+
+  const useTTS = ()=>{
+    if(audioCfg.tts && ttsSpeak(text, audioCfg.slow ? 0.7 : 0.95)) return;
+    markPlaying(el,false);
+    toast('🔇 还没有「' + text + '」的音频文件');
+  };
+
+  // 慢速模式：优先用 audio/slow/ 里的慢速音频，没有就正常音频降速播放
+  if(type === 'char' && audioCfg.slow && !audioFail.has('slow:' + text)){
+    playFile(AUDIO_DIR.slow + file, 1, ()=>{
+      audioFail.add('slow:' + text);
+      playAudio(text, type, el);
+    }, el);
+    return;
+  }
+  const key = type + ':' + text;
+  if(audioFail.has(key)){ useTTS(); return; }
+  playFile(AUDIO_DIR[type] + file, audioCfg.slow ? slowRate : 1, ()=>{
+    audioFail.add(key);
+    useTTS();
+  }, el);
+}
+
+/* 按钮点击入口（写在 onclick 里，阻止冒泡避免打开字卡） */
+function speakEl(el, ev){
+  if(ev){ ev.stopPropagation(); if(ev.preventDefault) ev.preventDefault(); }
+  playAudio(el.dataset.say, el.dataset.type || 'char', el);
+}
+
+/* 下载文本文件 */
+function downloadText(text, filename){
+  const blob = new Blob(['\ufeff' + text], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1200);
+}
+
+/* 导出音频文件清单（给批量生成用） */
+function exportAudioList(){
+  const words = new Set();
+  CHARS.forEach(o=>o.w.forEach(w=>words.add(w)));
+  let txt = '识字小天地 · 音频文件清单\n';
+  txt += '格式：mp3 ｜ 文件名 = 文本本身（如 水.mp3）｜ 建议普通话女声、语速稍慢\n';
+  txt += '合计 ' + (CHARS.length + words.size) + ' 个文件（单字 ' + CHARS.length + ' + 组词 ' + words.size + '）\n';
+  txt += '\n【一】单字读音 → 放入 audio/chars/ 目录\n';
+  CHARS.forEach(o=>{ txt += o.c + '.mp3\t' + o.c + '\t' + o.p + '\n'; });
+  txt += '\n【二】组词读音 → 放入 audio/words/ 目录\n';
+  [...words].forEach(w=>{ txt += w + '.mp3\t' + w + '\n'; });
+  txt += '\n【三】慢速单字（可选）→ 放入 audio/slow/ 目录\n';
+  txt += '如果不做慢速版，系统会自动把正常音频降速播放，不影响使用。\n';
+  downloadText(txt, '识字小天地-音频文件清单.txt');
+  toast('🎧 清单已下载（共 ' + (CHARS.length + words.size) + ' 个文件）');
+}
+
+/* 检测音频包：单字逐个检查是否存在 */
+async function checkAudio(){
+  if(location.protocol === 'file:'){
+    toast('⚠️ 本地文件模式无法检测，请用网址(http/https)打开');
+    return;
+  }
+  toast('🔍 正在检测 200 个单字音频…');
+  const list = CHARS.map(o=>o.c);
+  let idx = 0, ok = 0; const miss = [];
+  const worker = async ()=>{
+    while(idx < list.length){
+      const c = list[idx++];
+      try{
+        const r = await fetch(AUDIO_DIR.char + encodeURIComponent(c) + '.mp3', {method:'HEAD'});
+        if(r.ok) ok++; else miss.push(c);
+      }catch(e){ miss.push(c); }
+    }
+  };
+  await Promise.all(Array.from({length:8}, worker));
+  if(!miss.length){ toast('✅ 单字音频全部就位（200/200）'); return; }
+  downloadText('缺失的单字音频（共 ' + miss.length + ' 个）：\n' + miss.join(' '), '缺失音频清单.txt');
+  toast('检测完成：已有 ' + ok + '/200，缺失 ' + miss.length + ' 个（清单已下载）');
+}
+
+function renderAudioCfg(){
+  const set = (id,on)=>{ const e=document.querySelector('#'+id+' .sw'); if(e) e.classList.toggle('on', !!on); };
+  set('swSlow', audioCfg.slow); set('swAuto', audioCfg.auto); set('swTts', audioCfg.tts);
+}
+
+let drawing = false;
+
+function load(){
+  try{ learned = new Set(JSON.parse(localStorage.getItem(LS_LEARN)||'[]')); }catch(e){ learned = new Set(); }
+  try{ days = JSON.parse(localStorage.getItem(LS_DAYS)||'{}'); }catch(e){ days = {}; }
+}
+function save(){
+  localStorage.setItem(LS_LEARN, JSON.stringify([...learned]));
+  localStorage.setItem(LS_DAYS, JSON.stringify(days));
+}
+function getChar(c){ return CHARS.find(o=>o.c===c); }
+function todayStr(){ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function addLearned(c){
+  if(learned.has(c)) return false;
+  learned.add(c);
+  const t=todayStr();
+  (days[t]=days[t]||[]).push(c);
+  save(); return true;
+}
+function delLearned(c){
+  if(!learned.has(c)) return false;
+  learned.delete(c);
+  for(const k in days){ days[k]=days[k].filter(x=>x!==c); if(!days[k].length) delete days[k]; }
+  save(); return true;
+}
+
+/* ==================== 工具 ==================== */
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1800);
+}
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ==================== 渲染：工作台 ==================== */
+function renderHome(){
+  const n=learned.size;
+  document.getElementById('ringPct').textContent = Math.round(n/200*100)+'%';
+  const off = 138.2*(1-n/200);
+  document.getElementById('ringBar').style.strokeDashoffset = off;
+  document.getElementById('topCount').textContent = n;
+
+  document.getElementById('stLearned').textContent = n;
+  document.getElementById('stRemain').textContent = 200-n;
+  document.getElementById('stDays').textContent = Object.keys(days).length;
+  document.getElementById('stMonth').textContent = monthGoal();
+
+  // 旅程文案
+  const m = monthsPassed();
+  document.getElementById('heroLine').innerHTML =
+    `我们的目标是 <b>6 岁前认识 200 个常用字</b>，现在是旅程的第 <b>${m+1}</b> 个月，一共 24 个月。<br>坚持每天 10 分钟，很快就能自己读绘本啦！`;
+  document.getElementById('heroDays').textContent = '📆 已坚持 ' + Object.keys(days).length + ' 天';
+  document.getElementById('heroGoal').textContent = '🎯 本月目标 ' + monthGoal() + ' 字';
+
+  // 今日推荐：未学的字，按顺序取5个（每天固定顺序）
+  const todo = CHARS.filter(o=>!learned.has(o.c));
+  const todayNum = Math.floor(Date.now()/86400000);
+  const rec = [];
+  if(todo.length){
+    for(let i=0;i<5;i++){ rec.push(todo[(todayNum+i)%todo.length]); }
+  }
+  const tl = document.getElementById('todayList');
+  if(!todo.length){
+    tl.innerHTML = '<div class="empty">🎉 太棒了！200 个字全部学会啦！</div>';
+  }else{
+    tl.innerHTML = rec.map(o=>`
+      <div class="mini-card" onclick="openModal('${o.c}')">
+        <div class="em">${o.e}</div>
+        <div class="ch-row">
+          <span class="ch hanzi">${o.c}</span>
+          <span class="spk" data-say="${o.c}" data-type="char" onclick="speakEl(this,event)" title="点一下听读音">🔊</span>
+        </div>
+        <div class="py">${o.p}</div>
+        <div style="font-size:12px;color:var(--sub);margin-top:4px">${o.w[0]} · ${o.w[1]}</div>
+      </div>`).join('');
+  }
+
+  // 分类进度
+  document.getElementById('catList').innerHTML = CATS.map(g=>{
+    const arr = CHARS.filter(o=>o.g===g);
+    const done = arr.filter(o=>learned.has(o.c)).length;
+    return `<div class="cat-item" onclick="goCat('${g}')">
+      <div class="top"><span class="nm">${g}</span><span class="cnt">${done}/${arr.length}</span></div>
+      <div class="bar"><i style="width:${done/arr.length*100}%;background:${CAT_COLOR[g]}"></i></div>
+    </div>`;
+  }).join('');
+
+  // 近7天
+  const wk = document.getElementById('weekChart');
+  const out=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date(); d.setDate(d.getDate()-i);
+    const key=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+    const cnt=(days[key]||[]).length;
+    out.push(`<div class="d"><div class="col" style="height:${Math.max(4,cnt*20)}px"></div><div class="lb">${i===0?'今天':(d.getMonth()+1)+'/'+d.getDate()}</div><div style="font-size:10px;color:var(--sub)">${cnt||''}</div></div>`);
+  }
+  wk.innerHTML=out.join('');
+}
+
+/* ==================== 渲染：字卡 ==================== */
+let activeCatChip='全部';
+function renderCards(){
+  document.getElementById('cardCount').textContent =
+    `共 ${CHARS.length} 字 · 已学 ${learned.size} · 未学 ${CHARS.length-learned.size}`;
+
+  // 分类chips
+  const chips = document.getElementById('catChips');
+  chips.innerHTML = ['全部',...CATS].map(g=>
+    `<button class="chip ${cardCat===g?'active':''}" data-cat="${g}">${g}</button>`).join('');
+  chips.querySelectorAll('[data-cat]').forEach(b=>{
+    b.onclick=()=>{ cardCat=b.dataset.cat; renderCards(); };
+  });
+
+  // 筛选chips
+  document.getElementById('fAll').classList.toggle('active', cardFilter==='all');
+  document.getElementById('fLearned').classList.toggle('active', cardFilter==='learned');
+  document.getElementById('fTodo').classList.toggle('active', cardFilter==='todo');
+
+  const kw = searchKw.trim().toLowerCase();
+  let list = CHARS.filter(o=>{
+    if(cardCat!=='全部' && o.g!==cardCat) return false;
+    if(cardFilter==='learned' && !learned.has(o.c)) return false;
+    if(cardFilter==='todo' && learned.has(o.c)) return false;
+    if(kw && !(o.c.includes(kw) || o.p.includes(kw) || o.w.some(w=>w.includes(kw)))) return false;
+    return true;
+  });
+  const grid = document.getElementById('cardGrid');
+  document.getElementById('cardEmpty').hidden = list.length>0;
+  grid.innerHTML = list.map(o=>`
+    <div class="zcard ${learned.has(o.c)?'learned':''}" onclick="openModal('${o.c}')">
+      <span class="g">${o.g}</span>
+      <div class="em">${o.e}</div>
+      <div class="ch-row">
+        <span class="ch hanzi">${o.c}</span>
+        <span class="spk" data-say="${o.c}" data-type="char" onclick="speakEl(this,event)" title="点一下听读音">🔊</span>
+      </div>
+      <div class="py">${o.p} · ${o.s}画</div>
+      <div class="words">${o.w.slice(0,3).map(w=>`<span>${w}</span>`).join('')}</div>
+      <span class="sn">${o.x.slice(0,6)}…</span>
+    </div>`).join('');
+}
+
+/* ==================== 大字卡弹窗 ==================== */
+let modalChar=null;
+function openModal(c){
+  const o=getChar(c); if(!o) return;
+  modalChar=o;
+  document.getElementById('mEm').textContent=o.e;
+  document.getElementById('mCh').textContent=o.c;
+  document.getElementById('mPy').textContent=o.p;
+  document.getElementById('mInfo').textContent=`${o.g} · 共 ${o.s} 画`;
+  document.getElementById('mX').innerHTML=`💭 <b>形象记忆：</b>${o.x}`;
+  const mSpk=document.getElementById('mSpk');
+  mSpk.dataset.say=o.c; mSpk.classList.remove('playing');
+  document.getElementById('mWords').innerHTML=o.w.map(w=>
+    '<span data-say="'+w+'" data-type="word" onclick="speakEl(this,event)" title="点一下听读音">'+w+'<i class="spk-mini">🔊</i></span>').join('');
+  document.getElementById('mBs').innerHTML=o.b.map((b,i)=>
+    '<i>'+svgStroke(b,26)+'<b>'+(i+1)+'.'+b+'</b></i>').join('');
+  const btn=document.getElementById('mBtn');
+  if(learned.has(o.c)){
+    btn.textContent='✅ 已学会（点击取消）'; btn.className='m-btn learned-b';
+  }else{
+    btn.textContent='⭐ 学会啦！'; btn.className='m-btn';
+  }
+  document.getElementById('modalMask').classList.add('show');
+  if(audioCfg.auto) setTimeout(()=>playAudio(o.c,'char',document.getElementById('mSpk')), 260);
+}
+function closeModal(){ document.getElementById('modalMask').classList.remove('show'); }
+
+/* ==================== 笔画练习 ==================== */
+const canvas = document.getElementById('padCanvas');
+const ctx = canvas.getContext('2d');
+function fitCanvas(){
+  const dpr = window.devicePixelRatio||1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width*dpr;
+  canvas.height = rect.height*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  drawBoard();
+}
+function drawBoard(){
+  const W=canvas.width/(window.devicePixelRatio||1), H=canvas.height/(window.devicePixelRatio||1);
+  ctx.clearRect(0,0,W,H);
+  // 田字格
+  ctx.strokeStyle='#EFE3D5'; ctx.lineWidth=2; ctx.strokeRect(6,6,W-12,H-12);
+  ctx.setLineDash([6,6]);
+  ctx.beginPath(); ctx.moveTo(W/2,6); ctx.lineTo(W/2,H-6); ctx.moveTo(6,H/2); ctx.lineTo(W-6,H/2); ctx.stroke();
+  ctx.setLineDash([]);
+  // 底字
+  const o=CHARS[strokeIdx];
+  ctx.fillStyle='rgba(74,63,53,.10)';
+  ctx.font=(W*0.62)+'px "Kaiti SC","STKaiti","楷体","KaiTi",serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(o.c, W/2, H/2+4);
+}
+function drawStroke(x0,y0,x1,y1){
+  ctx.strokeStyle=penColor; ctx.globalAlpha=0.75;
+  ctx.lineWidth=14; ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+  ctx.globalAlpha=1;
+}
+let lastX=0,lastY=0;
+canvas.addEventListener('pointerdown', e=>{
+  drawing=true; canvas.setPointerCapture(e.pointerId);
+  const r=canvas.getBoundingClientRect();
+  lastX=e.clientX-r.left; lastY=e.clientY-r.top;
+  ctx.strokeStyle=penColor; ctx.globalAlpha=0.75; ctx.lineWidth=14; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(lastX,lastY);
+  ctx.lineTo(lastX+0.1,lastY+0.1); ctx.stroke();
+  ctx.globalAlpha=1;
+});
+canvas.addEventListener('pointermove', e=>{
+  if(!drawing) return;
+  const r=canvas.getBoundingClientRect();
+  const cx=e.clientX-r.left, cy=e.clientY-r.top;
+  drawStroke(lastX,lastY,cx,cy);
+  lastX=cx; lastY=cy;
+});
+canvas.addEventListener('pointerup', ()=>{ drawing=false; });
+canvas.addEventListener('pointercancel', ()=>{ drawing=false; });
+
+function renderStroke(){
+  const o=CHARS[strokeIdx];
+  const learnedNow = learned.has(o.c);
+  document.getElementById('sEm').textContent=o.e;
+  document.getElementById('sCh').textContent=o.c;
+  const sSpk=document.getElementById('sSpk');
+  if(sSpk){ sSpk.dataset.say=o.c; sSpk.classList.remove('playing'); }
+  document.getElementById('sPy').textContent=o.p+' · '+o.g;
+  document.getElementById('sStrokes').textContent='共 '+o.s+' 画';
+  document.getElementById('sDone').textContent=(learnedNow?'✅ 已学会':'✏️ '+strokeStep+'/'+o.s+' 笔');
+  const bs=document.getElementById('sBs');
+  bs.innerHTML=o.b.map((b,i)=>{
+    return '<span class="step '+(i<strokeStep?'done':'')+' '+(i===strokeStep?'cur':'')+'">'+
+      svgStroke(b,26)+'<span class="nm">'+(i+1)+'.'+b+'</span></span>';
+  }).join('');
+  const tip=document.getElementById('sTip');
+  tip.innerHTML = strokeStep>=o.s
+    ? '🎉 全部笔画写完啦！再描一遍会更棒～'
+    : '第 <b>'+(strokeStep+1)+'</b> 笔：'+svgStroke(o.b[strokeStep]||'',44)+
+      '<b style="color:var(--main)">'+(o.b[strokeStep]||'')+'</b> · 照着格子里的灰色字，用手指或鼠标写一写';
+  document.getElementById('btnMark').textContent = learnedNow ? '✅ 已学会（点击取消）' : '⭐ 这个字学会啦';
+  drawBoard();
+  strokeStep=0;
+}
+function nextStroke(){ const o=CHARS[strokeIdx]; if(strokeStep<o.s) strokeStep++; renderStroke(); }
+
+/* ==================== 报告 ==================== */
+function monthsPassed(){
+  const start=new Date(2026,8,1); // 2026-09
+  const now=new Date();
+  const m=(now.getFullYear()-start.getFullYear())*12+(now.getMonth()-start.getMonth());
+  return Math.max(0, Math.min(23, m));
+}
+function monthGoal(){
+  const m=monthsPassed();
+  return Math.round(200/24*(m+1)) - Math.round(200/24*m);
+}
+function renderReport(){
+  const n=learned.size;
+  document.getElementById('rLearned').textContent=n;
+  document.getElementById('rRemain').textContent=200-n;
+  document.getElementById('rRate').textContent=Math.round(n/200*100)+'%';
+  document.getElementById('rDays').textContent=Object.keys(days).length;
+
+  // 旅程条
+  const m=monthsPassed();
+  document.getElementById('mileLbl').textContent=`第 ${m+1}/24 个月 · 目标累计 ${Math.round(200/24*(m+1))} 字`;
+  const pct=(m+1)/24*100;
+  document.getElementById('mileBar').style.width=pct+'%';
+  const nowEl=document.getElementById('mileNow');
+  nowEl.style.left=pct+'%'; nowEl.style.display='block';
+
+  // 分类
+  document.getElementById('rChart').innerHTML=CATS.map(g=>{
+    const arr=CHARS.filter(o=>o.g===g);
+    const done=arr.filter(o=>learned.has(o.c)).length;
+    return `<div class="r-row">
+      <span class="nm">${g}</span>
+      <div class="bar"><i style="width:${done/arr.length*100}%;background:${CAT_COLOR[g]}"></i></div>
+      <span class="val">${done}/${arr.length}</span>
+    </div>`;
+  }).join('');
+}
+
+/* ==================== 导出 & 重置 ==================== */
+function exportList(){
+  const lines=[];
+  CATS.forEach(g=>{
+    const arr=CHARS.filter(o=>o.g===g);
+    const done=arr.filter(o=>learned.has(o.c));
+    if(done.length) lines.push('【'+g+'】'+done.map(o=>o.c).join(' '));
+  });
+  const text='宝贝已学会的 '+learned.size+' 个字（'+todayStr()+'）\n\n'+lines.join('\n');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>toast('📋 已复制到剪贴板！'),()=>fallbackCopy(text));
+  }else fallbackCopy(text);
+  toast('📋 已生成清单（'+learned.size+' 字）');
+}
+function fallbackCopy(text){
+  const ta=document.createElement('textarea');
+  ta.value=text; document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+}
+function resetAll(){
+  if(!confirm('确定要重置所有学习进度吗？此操作不可恢复！')) return;
+  learned=new Set(); days={}; save(); renderAll();
+  toast('🗑️ 进度已重置');
+}
+
+/* ==================== 渲染入口 ==================== */
+function renderAll(){
+  renderHome(); renderCards(); renderReport();
+  if(curTab==='stroke') renderStroke();
+}
+function switchTab(t){
+  curTab=t;
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
+  ['home','cards','stroke','report'].forEach(id=>{
+    document.getElementById(id).hidden = (id!==t);
+  });
+  if(t==='stroke'){ renderStroke(); requestAnimationFrame(fitCanvas); }
+  if(t==='home') renderHome();
+  if(t==='cards') renderCards();
+  if(t==='report') renderReport();
+  window.scrollTo({top:0});
+}
+function goCat(g){ switchTab('cards'); cardCat=g; renderCards(); }
+
+/* ==================== 事件绑定 ==================== */
+document.querySelectorAll('.tabs button').forEach(b=>{
+  b.onclick=()=>switchTab(b.dataset.tab);
+});
+document.getElementById('fAll').onclick=()=>{cardFilter='all';renderCards();};
+document.getElementById('fLearned').onclick=()=>{cardFilter='learned';renderCards();};
+document.getElementById('fTodo').onclick=()=>{cardFilter='todo';renderCards();};
+document.getElementById('searchInput').addEventListener('input',e=>{searchKw=e.target.value;renderCards();});
+
+document.getElementById('modalMask').addEventListener('click',e=>{ if(e.target.id==='modalMask') closeModal(); });
+document.getElementById('modalClose').onclick=closeModal;
+document.getElementById('mBtn').onclick=()=>{
+  if(!modalChar) return;
+  if(learned.has(modalChar.c)){
+    delLearned(modalChar.c);
+    toast('已取消「'+modalChar.c+'」');
+  }else{
+    addLearned(modalChar.c);
+    toast('🎉 太棒了！学会「'+modalChar.c+'」啦！');
+  }
+  openModal(modalChar.c);
+  renderAll();
+};
+
+document.getElementById('btnClear').onclick=()=>{ fitCanvas(); };
+document.getElementById('btnHint').onclick=()=>{ nextStroke(); };
+document.getElementById('btnPrev').onclick=()=>{ strokeIdx=(strokeIdx-1+CHARS.length)%CHARS.length; strokeStep=0; renderStroke(); fitCanvas(); };
+document.getElementById('btnNext').onclick=()=>{ strokeIdx=(strokeIdx+1)%CHARS.length; strokeStep=0; renderStroke(); fitCanvas(); };
+document.getElementById('btnMark').onclick=()=>{
+  const o=CHARS[strokeIdx];
+  if(learned.has(o.c)){ delLearned(o.c); toast('已取消「'+o.c+'」'); }
+  else{ addLearned(o.c); toast('🎉 学会「'+o.c+'」啦！'); }
+  renderStroke(); renderHome(); renderCards(); renderReport();
+};
+
+const colorDots=document.getElementById('colorDots');
+PEN_COLORS.forEach(c=>{
+  const d=document.createElement('div');
+  d.className='color-dot'+(c===penColor?' on':'');
+  d.style.background=c;
+  d.onclick=()=>{
+    penColor=c;
+    colorDots.querySelectorAll('.color-dot').forEach(x=>x.classList.remove('on'));
+    d.classList.add('on');
+  };
+  colorDots.appendChild(d);
+});
+
+document.getElementById('btnExport').onclick=exportList;
+document.getElementById('btnReset').onclick=resetAll;
+document.getElementById('btnAudioList').onclick=exportAudioList;
+document.getElementById('btnCheckAudio').onclick=checkAudio;
+document.getElementById('swSlow').onclick=()=>{
+  audioCfg.slow=!audioCfg.slow; saveAudioCfg(); renderAudioCfg();
+  toast(audioCfg.slow?'🐢 已开启慢速跟读':'已关闭慢速跟读');
+};
+document.getElementById('swAuto').onclick=()=>{
+  audioCfg.auto=!audioCfg.auto; saveAudioCfg(); renderAudioCfg();
+  toast(audioCfg.auto?'🔊 打开字卡会自动朗读':'已关闭自动朗读');
+};
+document.getElementById('swTts').onclick=()=>{
+  audioCfg.tts=!audioCfg.tts; saveAudioCfg(); renderAudioCfg();
+  toast(audioCfg.tts?'已开启「浏览器语音兜底」':'已关闭「浏览器语音兜底」');
+};
+
+window.addEventListener('resize', ()=>{ if(curTab==='stroke') fitCanvas(); });
+
+/* ==================== 启动 ==================== */
+load();
+loadAudioCfg();
+renderAudioCfg();
+switchTab('home');
+</script>
+</body>
+</html>
